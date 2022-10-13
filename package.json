@@ -1,0 +1,19 @@
+{
+  "name": "wishlist",
+  "version": "1.0.0",
+  "description": "Capstone II project using PERN stack",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "PERN",
+    "postgreSQL",
+    "Express",
+    "React",
+    "Node",
+    "JavaScript"
+  ],
+  "author": "Prima Jenkins",
+  "license": "ISC"
+}

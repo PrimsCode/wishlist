@@ -1,0 +1,73 @@
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(25) UNIQUE NOT NULL,
+  password TEXT NOT NULL,
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
+  profile_pic TEXT,
+  is_admin BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+CREATE TABLE location (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE item_categories (
+    id SERIAL PRIMARY KEY,
+    category VARCHAR(40) UNIQUE NOT NULL
+);
+
+CREATE TABLE items (
+  id SERIAL PRIMARY KEY,
+  name TEXT UNIQUE NOT NULL,
+  price DECIMAL NOT NULL,
+  description VARCHAR(200),
+  category_id INTEGER NOT NULL
+    REFERENCES item_categories ON DELETE CASCADE,
+  location_id INTEGER NOT NULL
+    REFERENCES location ON DELETE CASCADE,
+  link TEXT UNIQUE NOT NULL,
+  image_link TEXT
+);
+
+CREATE TABLE wishlist_categories (
+    id SERIAL PRIMARY KEY,
+    category VARCHAR(40) UNIQUE NOT NULL
+);
+
+CREATE TABLE wishlists (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL
+        REFERENCES users ON DELETE CASCADE,
+    category_id INTEGER NOT NULL
+        REFERENCES wishlist_categories ON DELETE CASCADE
+);
+
+CREATE TABLE status (
+    id SERIAL PRIMARY KEY,
+    purchase BOOLEAN NOT NULL DEFAULT FALSE,
+    anonymous BOOLEAN NOT NULL DEFAULT FALSE, 
+    user_id INTEGER
+        REFERENCES users ON DELETE CASCADE
+);
+
+CREATE TABLE wishlist_items (
+    id SERIAL PRIMARY KEY,
+    wishlist_id INTEGER NOT NULL
+        REFERENCES wishlists ON DELETE CASCADE,
+    item_id INTEGER NOT NULL
+        REFERENCES items ON DELETE CASCADE,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    must_have BOOLEAN NOT NULL DEFAULT FALSE,
+    status_id INTEGER NOT NULL
+        REFERENCES status ON DELETE CASCADE
+);
+
+CREATE TABLE follow (
+    id SERIAL PRIMARY KEY,
+    follower_id INTEGER NOT NULL
+        REFERENCES users ON DELETE CASCADE,
+    following_id INTEGER NOT NULL
+        REFERENCES users ON DELETE CASCADE
+);
