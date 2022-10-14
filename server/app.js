@@ -19,9 +19,7 @@ app.use(authenticateJWT);
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/items", itemRoutes);
-// app.use("/wishlists", wishlistRoutes);
-
-
+app.use("/wishlists", wishlistRoutes);
 
 
 //Handle 404 errors

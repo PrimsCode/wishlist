@@ -47,6 +47,7 @@ GET /users
 ```
 Response:
 {
+   id
    username
    first_name
    last_name
@@ -59,6 +60,7 @@ GET /users/{username}
 ```
 Response:
 {
+   id
    username
    first_name
    last_name
@@ -80,6 +82,7 @@ Request
 ```
 Response:
 {
+   id
    username
    first_name
    last_name
@@ -90,6 +93,182 @@ Response:
 
 Delete /users/{username}
 > delete a specific user by username (admin or same user function)
+
+POST /users/{username}/wishlists
+> create a new wishlist for a specific user
+```
+Request:
+{
+   wishlist_category
+}
+```
+```
+Response:
+{
+   wishlist_category
+}
+```
+GET /users/{username}/wishlists
+> get all wishlists of a specific user by username
+```
+Response:
+{
+   wishlists: [
+      {
+         id
+         wishlist_category
+      }
+   ]
+}
+```
+GET /users/{username}/wishlists/{category}
+> get a wishlist of a category for a specific user by username
+```
+Response:
+{
+   wishlist_category
+}
+```
+PATCH /users/{username}/wishlists/{category}
+> update a wishlist of a category for a specific user by username
+```
+Response:
+{
+   wishlist_category
+}
+```
+DELETE /users/{username}/wishlists/{category}
+> delete a wishlist of a category for a specific user by username
+
+POST /users/{username}/wishlists/{category}
+> add an item to a wishlist of a category for a specific user by username
+```
+Response:
+{
+   wishlist_category
+}
+```
+DELETE /users/{username}/wishlists/{category}
+> delete an item to a wishlist of a category for a specific user by username
+```
+Response:
+{
+   wishlist_category
+}
+```
+GET /users/{username}/items
+> get all the items in the wishlists of a specific user by username
+```
+Response:
+{
+   items
+}
+```
+GET /users/{username}/items/{item_id}
+> get a specific item by id in the wishlists of a specific user by username
+```
+Response:
+{
+   item
+}
+```
+
+## Item Endpoints
+POST /items
+> create a new item
+```
+Request:
+{
+   name
+   price
+   description
+   location
+   category
+   link
+   image_link
+}
+```
+```
+Response:
+{
+         id
+         name
+         price
+         description
+         location
+         category
+         link
+         image_link
+}
+```
+
+GET /items
+> get all items in the database
+```
+Response:
+{
+   items:
+   [ 
+      {
+         id
+         name
+         price
+         description
+         location
+         category
+         link
+         image_link
+      }
+   ]
+}
+```
+GET /items/{item_id}
+> get an item by item id
+```
+Response:
+{
+         id
+         name
+         price
+         description
+         location
+         category
+         link
+         image_link
+}
+```
+
+PATCH /items/{item_id}
+> update an item by item id
+```
+Request:
+{
+   name
+   price
+   description
+   location
+   category
+   link
+   image_link
+}
+```
+```
+Response:
+{
+   id
+   name
+   price
+   description
+   location
+   category
+   link
+   image_link
+}
+```
+
+DELETE /items/{item_id}
+> delete an item by item id (admin function)
+
 
 ## Wishlist Endpoints
 GET /wishlists
@@ -107,99 +286,44 @@ Response:
    ]
 }
 ```
-GET /users/username/wishlists
-> get all wishlists of a specific user by username
+GET /wishlists/categories
+> get wishlist categories
 ```
 Response:
 {
-   wishlists:
+   categories:
    [ 
       {
          id
-         wishlist_category
-         items
+         category
       }
    ]
 }
 ```
-GET /users/username/wishlists/{wishlist_category}
-> get a wishlist by cateogy of a specific user
+POST /wishlists/categories
+> create a new category for wishlists
+```
+Request:
+{
+   category
+}
+```
 ```
 Response:
 {
    id
-   items
+   category
 }
 ```
-POST /users/username/wishlists
-> create a new wishlist for a specific user by username
-```
-Request:
-{
-   wishlist_category
-}
-```
-
-Delete /users/username/wishlists/{wishlist_category}
-> delete a wishlist for a specific user by username
-```
-Request:
-{
-   token
-}
-```
-
-## Item Endpoints
-GET /items
-> get all items in the database
+GET /wishlists/categories/{category}
+> get all wishlists from a specific category
 ```
 Response:
 {
-   items:
-   [ 
-      {
-         id
-         name
-         price
-         description
-         location
-         link
-         image_link
-      }
-   ]
+   id
+   category
 }
 ```
 
-POST /items
-> create a new item
-```
-Request:
-{
-   name
-   price
-   description
-   location
-   link
-   image_link
-}
-```
-
-Delete /items/{item_id}
-> delete an item by item (admin function)
-```
-Request:
-{
-   token
-}
-```
-
-POST /users/username/wishlists/{wishlist_category}
-> add an item to a specific wishlist of a user
-```
-Request:
-{
-   item_id
-   item_name
-   must_have
-}
-```
+Delete /wishlist/categories/{categor}
+> delete a wishlist's category
