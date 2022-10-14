@@ -36,8 +36,6 @@ class Item {
    * Throws NotFoundError if item not found.
    **/
   static async get(id) {
-
-    console.log("made it to getItem");
     const itemRes = await db.query(
           `SELECT i.id,
                   i.name,
@@ -84,17 +82,22 @@ class Item {
   return item;
 }
 
-  /** Update a user by their username
+  /** Update an item by id
    * Partial update is allowed
-   * Requests { firstName, lastName, password, profilePic}
-   * Returns { username, firstName, lastName, profilePic, isAdmin }
+   * Requests { name, price, description, link, imageLink, location, category}
+   * Returns { id, name }
    * Throws NotFoundError if not found.
    */
   static async update(id, data) {
-    const locationId = await locationCheck(data.location);
-    const categoryId = await itemCategoryCheck(data.category);
-    data.category = categoryId;
-    data.locationId = locationId;
+    if (data.location) {
+      const locationId = await locationCheck(data.location);
+      data.locationId = locationId;
+    };
+
+    if (data.category) {
+      const categoryId = await itemCategoryCheck(data.category);
+      data.category = categoryId;
+    }
 
     const { setCols, values } = sqlForPartialUpdate(
         data,
@@ -120,7 +123,7 @@ class Item {
     return item;
   }
 
-  /**Delete a user by their username. */
+  /**Delete an item by its id */
   static async remove(id) {
     let result = await db.query(
           `DELETE
@@ -132,7 +135,6 @@ class Item {
     const item = result.rows[0];
 
     if (!item) throw new NotFoundError(`The item doesn't exist!`);
-
     return `${item.name} has been deleted!`
   }
 }

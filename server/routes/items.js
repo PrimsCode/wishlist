@@ -3,6 +3,7 @@
 /** Routes for users. */
 const jsonschema = require("jsonschema");
 const itemNewSchema = require('../schemas/itemNew.json');
+const itemUpdateSchema = require('../schemas/itemUpdate.json');
 
 const express = require("express");
 const { ensureCorrectUserOrAdmin, ensureAdmin, ensureLoggedIn} = require("../middleware/auth");
@@ -63,7 +64,7 @@ const router = express.Router();
    **/
    router.patch("/:id", ensureAdmin, async function (req, res, next) {
     try {
-      const validator = jsonschema.validate(req.body, itemNewSchema);
+      const validator = jsonschema.validate(req.body, itemUpdateSchema);
       if (!validator.valid) {
         const errs = validator.errors.map(e => e.stack);
         throw new BadRequestError(errs);
