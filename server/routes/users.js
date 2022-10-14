@@ -24,7 +24,6 @@ const router = express.Router();
     }
   });
   
-  
   /** GET user by username
    * Returns { username, firstName, lastName, profilePic, isAdmin}
    * Authorization required: admin or same user as username
@@ -37,7 +36,6 @@ const router = express.Router();
       return next(err);
     }
   });
-  
   
   /** PATCH user by username
    * Data can include: { firstName, lastName, password, profilePic}
@@ -57,7 +55,6 @@ const router = express.Router();
       return next(err);
     }
   });
-  
   
   /** DELETE user by username
    * Authorization required: admin or same user as username

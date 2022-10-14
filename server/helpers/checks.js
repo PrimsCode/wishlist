@@ -39,4 +39,16 @@ const itemCategoryCheck = async(category) => {
     return  newCategory.rows[0].id;
   }
 
-module.exports = { userExistCheck, itemExistCheck, itemCategoryCheck };
+  const wishlistCategoryCheck = async(category) => {
+    console.log("made it to withlistCheck");
+    const lowerCaseCategory = category.toLowerCase(); 
+      const wishlistCategory = await db.query(
+          `SELECT id, category
+          FROM wishlist_categories
+          WHERE category = $1`, [lowerCaseCategory],
+        );
+      if (wishlistCategory.rows[0] != undefined) return true;
+      return false;
+    }
+
+module.exports = { userExistCheck, itemExistCheck, itemCategoryCheck, wishlistCategoryCheck };

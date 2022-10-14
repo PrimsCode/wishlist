@@ -18,15 +18,15 @@ CREATE DATABASE wishlist_test;
 \i wishlist-schema.sql
 
 
--- DROP TABLE users CASCADE;
--- DROP TABLE items CASCADE;
--- DROP TABLE wishlist_categories CASCADE;
--- DROP TABLE item_categories CASCADE;
--- DROP TABLE location CASCADE;
--- DROP TABLE wishlists CASCADE;
--- DROP TABLE status CASCADE;
--- DROP TABLE wishlist_items CASCADE;
--- DROP TABLE follow CASCADE;
+DROP TABLE users CASCADE;
+DROP TABLE items CASCADE;
+DROP TABLE wishlist_categories CASCADE;
+DROP TABLE item_categories CASCADE;
+DROP TABLE location CASCADE;
+DROP TABLE wishlists CASCADE;
+DROP TABLE status CASCADE;
+DROP TABLE wishlist_items CASCADE;
+DROP TABLE follow CASCADE;
 
 -- {
 -- 		"name": "duchessMeg",

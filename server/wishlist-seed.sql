@@ -51,16 +51,6 @@ VALUES ('grocery'),
         ('holiday')
     ;
 
-INSERT INTO location (name)
-VALUES ('target'),
-        ('walmart'),
-        ('amazon'),
-        ('kroger'),
-        ('heb'),
-        ('sephora'),
-        ('ulta')
-    ;
-
 INSERT INTO items (name, price, description, location_id, category_id, link, image_link)
 VALUES ('Eggo Homestyle Waffles', 2.85, 'Best frozen waffles in the world',
             2, 1, 'https://www.walmart.com/ip/Eggo-Frozen-Waffles-Homestyle-12-3-Oz-Box-Frozen/10891827', 'https://i5.walmartimages.com/asr/4f5b9fcf-6b7e-4c5d-8a10-4ac168c26f60.49d43f5cd31ebda2e6d4bb71c4e310a3.jpeg');
