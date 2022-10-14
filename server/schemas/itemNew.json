@@ -8,7 +8,6 @@
         "name",
         "price",
         "link",
-        "location",
         "category"
     ],
     "properties": {
@@ -52,14 +51,6 @@
                 "https://target.scene7.com/is/image/Target/GUEST_640cc90c-70cc-4d66-9918-b919527263b5?wid=253\u0026hei=253\u0026qlt=80\u0026fmt=pjpeg"
             ]
         },
-        "location": {
-            "type": "string",
-            "default": "",
-            "title": "The location Schema",
-            "examples": [
-                "target"
-            ]
-        },
         "category": {
             "type": "string",
             "default": "",
@@ -75,7 +66,6 @@
         "description": "Fry Force 360° Technology cooks food quickly and evenly with little to no oil",
         "link": "https://www.target.com/p/gourmia-5qt-12-function-guided-cook-digital-air-fryer-black/-/A-80137210",
         "imageLink": "https://target.scene7.com/is/image/Target/GUEST_640cc90c-70cc-4d66-9918-b919527263b5?wid=253\u0026hei=253\u0026qlt=80\u0026fmt=pjpeg",
-        "location": "target",
         "category": "electronics"
     }]
 }

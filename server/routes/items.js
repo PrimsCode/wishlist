@@ -13,7 +13,7 @@ const Item = require("../models/item");
 const router = express.Router();
 
   /** POST a new item
-   * Returns { id, name, price, description, link, imageLink, location, category}
+   * Returns { id, name, price, description, link, imageLink, category}
    * Authorization required: logged in
    **/
    router.post("/", ensureLoggedIn, async function (req, res, next) {
@@ -45,7 +45,7 @@ const router = express.Router();
   
   
   /** GET item by id
-   * Returns { id, name, price, description, link, imageLink, location, category}
+   * Returns { id, name, price, description, link, imageLink, category}
    **/
   router.get("/:id", async function (req, res, next) {
     try {
@@ -58,8 +58,8 @@ const router = express.Router();
 
 
   /** PATCH item by id
-   * Data can include: { name, price, description, link, imageLink, location, category}
-   * Returns { id, name, price, description, link, imageLink, location, category}
+   * Data can include: { name, price, description, link, imageLink, category}
+   * Returns { id, name, price, description, link, imageLink, category}
    * Authorization required: admin
    **/
    router.patch("/:id", ensureAdmin, async function (req, res, next) {

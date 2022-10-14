@@ -21,25 +21,6 @@ const itemExistCheck = async(name, link) => {
     return false;
   }
 
-//Checks if location exists, if not then add a new location
-const locationCheck = async(name) => {
-  const lowerCaseName = name.toLowerCase(); 
-  const location = await db.query(
-        `SELECT id, name
-        FROM location
-        WHERE name = $1`, [lowerCaseName],
-      );
-
-    if (location.rows[0]) return location.rows[0].id;
-
-    const result = await db.query(
-      `INSERT INTO location (name) VALUES ($1) RETURNING id, name`,
-      [name],
-    );
-    const newLocation = result.rows[0];
-    return  newLocation.rows[0].id;
-  }
-
 //Checks if item category exists, if not then add a new category
 const itemCategoryCheck = async(category) => {
   const lowerCaseCategory = category.toLowerCase(); 
@@ -58,4 +39,4 @@ const itemCategoryCheck = async(category) => {
     return  newCategory.rows[0].id;
   }
 
-module.exports = { userExistCheck, itemExistCheck, locationCheck, itemCategoryCheck };
+module.exports = { userExistCheck, itemExistCheck, itemCategoryCheck };
