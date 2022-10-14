@@ -8,11 +8,6 @@ CREATE TABLE users (
   is_admin BOOLEAN NOT NULL DEFAULT FALSE
 );
 
-CREATE TABLE location (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(50) UNIQUE NOT NULL
-);
-
 CREATE TABLE item_categories (
     id SERIAL PRIMARY KEY,
     category VARCHAR(40) UNIQUE NOT NULL
@@ -22,11 +17,9 @@ CREATE TABLE items (
   id SERIAL PRIMARY KEY,
   name TEXT UNIQUE NOT NULL,
   price DECIMAL NOT NULL,
-  description VARCHAR(200),
+  description VARCHAR(300),
   category_id INTEGER NOT NULL
     REFERENCES item_categories ON DELETE CASCADE,
-  location_id INTEGER NOT NULL
-    REFERENCES location ON DELETE CASCADE,
   link TEXT UNIQUE NOT NULL,
   image_link TEXT
 );
@@ -36,12 +29,14 @@ CREATE TABLE wishlist_categories (
     category VARCHAR(40) UNIQUE NOT NULL
 );
 
-CREATE TABLE wishlists (
+CREATE TABLE user_wishlists (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL
         REFERENCES users ON DELETE CASCADE,
     category_id INTEGER NOT NULL
-        REFERENCES wishlist_categories ON DELETE CASCADE
+        REFERENCES wishlist_categories ON DELETE CASCADE,
+    description VARCHAR(300),
+    active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE status (
@@ -52,10 +47,10 @@ CREATE TABLE status (
         REFERENCES users ON DELETE CASCADE
 );
 
-CREATE TABLE wishlist_items (
+CREATE TABLE user_items (
     id SERIAL PRIMARY KEY,
-    wishlist_id INTEGER NOT NULL
-        REFERENCES wishlists ON DELETE CASCADE,
+    user_id INTEGER NOT NULL
+        REFERENCES users ON DELETE CASCADE,
     item_id INTEGER NOT NULL
         REFERENCES items ON DELETE CASCADE,
     active BOOLEAN NOT NULL DEFAULT TRUE,
@@ -65,9 +60,16 @@ CREATE TABLE wishlist_items (
 );
 
 CREATE TABLE follow (
-    id SERIAL PRIMARY KEY,
-    follower_id INTEGER NOT NULL
+    follower_id INTEGER PRIMARY KEY
         REFERENCES users ON DELETE CASCADE,
-    following_id INTEGER NOT NULL
+    following_id INTEGER[]
         REFERENCES users ON DELETE CASCADE
+);
+
+CREATE TABLE user_wishlists_items (
+    user_items_id INTEGER
+        REFERENCES user_items ON DELETE CASCADE,
+    user_wishlists_id INTEGER
+        REFERENCES user_wishlists ON DELETE CASCADE,
+    PRIMARY KEY (user_items_id, user_wishlists_id)
 );
