@@ -41,7 +41,6 @@ class Item {
                   i.description,
                   i.link,
                   i.image_link AS "imageLink",
-                  l.name AS "location",
                   c.category AS "category"
            FROM items i
            INNER JOIN item_categories c ON c.id = i.category_id 

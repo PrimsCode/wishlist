@@ -10,13 +10,14 @@ const {
 
 class Wishlist {
     /**Get all active wishlists
-   * Returns [{id, username, wishlsit_category, description}, ...]
+   * Returns [{id, username, wishlist_category, description}, ...]
    **/
      static async getAll() {
       const result = await db.query(
-            `SELECT id, username, category, description
-             FROM user_wishlists
-             ORDER BY category`,
+            `SELECT w.id, w.username, c.category, w.description
+             FROM user_wishlists w
+             INNER JOIN wishlist_categories c ON w.category_id = c.id
+             ORDER BY c.category`,
       );
       return result.rows;
     }

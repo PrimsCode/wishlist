@@ -182,7 +182,6 @@ Request:
    name
    price
    description
-   location
    category
    link
    image_link
@@ -195,7 +194,6 @@ Response:
          name
          price
          description
-         location
          category
          link
          image_link
@@ -214,7 +212,6 @@ Response:
          name
          price
          description
-         location
          category
          link
          image_link
@@ -231,7 +228,6 @@ Response:
          name
          price
          description
-         location
          category
          link
          image_link
@@ -246,7 +242,6 @@ Request:
    name
    price
    description
-   location
    category
    link
    image_link
@@ -259,7 +254,6 @@ Response:
    name
    price
    description
-   location
    category
    link
    image_link
@@ -272,7 +266,7 @@ DELETE /items/{item_id}
 
 ## Wishlist Endpoints
 GET /wishlists
-> get all wishlists
+> get all active wishlists
 ```
 Response:
 {
@@ -282,6 +276,7 @@ Response:
          id
          username
          wishlist_category
+         description
       }
    ]
 }
@@ -295,7 +290,7 @@ Response:
    [ 
       {
          id
-         category
+         wishlist_category
       }
    ]
 }
@@ -320,8 +315,12 @@ GET /wishlists/categories/{category}
 ```
 Response:
 {
-   id
-   category
+   [{
+      id
+      username
+      wishlist_category
+      description
+   }]
 }
 ```
 
