@@ -11,7 +11,6 @@ const userExistCheck = async(username) => {
   }
 
 const itemExistCheck = async(name, link) => {
-  console.log("made it to itemCheck");
     const item = await db.query(
         `SELECT name
         FROM items
@@ -40,15 +39,26 @@ const itemCategoryCheck = async(category) => {
   }
 
   const wishlistCategoryCheck = async(category) => {
-    console.log("made it to withlistCheck");
     const lowerCaseCategory = category.toLowerCase(); 
       const wishlistCategory = await db.query(
           `SELECT id, category
           FROM wishlist_categories
           WHERE category = $1`, [lowerCaseCategory],
         );
-      if (wishlistCategory.rows[0] != undefined) return true;
+      if (wishlistCategory.rows[0] != undefined) return wishlistCategory.rows[0];
       return false;
     }
 
-module.exports = { userExistCheck, itemExistCheck, itemCategoryCheck, wishlistCategoryCheck };
+    
+  const userWishlistExistCheck = async(username, categoryId) => {
+
+      const userWishlist = await db.query(
+          `SELECT id, username, category_id
+          FROM user_wishlists
+          WHERE username = $1 AND category_id = $2`, [username, categoryId],
+        );
+      if (userWishlist.rows[0] != undefined) return userWishlist.rows[0];
+      return false;
+    }
+
+module.exports = { userExistCheck, itemExistCheck, itemCategoryCheck, wishlistCategoryCheck, userWishlistExistCheck };

@@ -1,6 +1,5 @@
 CREATE TABLE users (
-  id SERIAL PRIMARY KEY,
-  username VARCHAR(25) UNIQUE NOT NULL,
+  username VARCHAR(25) PRIMARY KEY,
   password TEXT NOT NULL,
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
@@ -31,25 +30,24 @@ CREATE TABLE wishlist_categories (
 
 CREATE TABLE user_wishlists (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL
+    username VARCHAR NOT NULL
         REFERENCES users ON DELETE CASCADE,
     category_id INTEGER NOT NULL
         REFERENCES wishlist_categories ON DELETE CASCADE,
-    description VARCHAR(300),
-    active BOOLEAN NOT NULL DEFAULT TRUE
+    description VARCHAR(300)
 );
 
 CREATE TABLE status (
     id SERIAL PRIMARY KEY,
     purchase BOOLEAN NOT NULL DEFAULT FALSE,
     anonymous BOOLEAN NOT NULL DEFAULT FALSE, 
-    user_id INTEGER
+    username VARCHAR
         REFERENCES users ON DELETE CASCADE
 );
 
 CREATE TABLE user_items (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL
+    username VARCHAR NOT NULL
         REFERENCES users ON DELETE CASCADE,
     item_id INTEGER NOT NULL
         REFERENCES items ON DELETE CASCADE,
@@ -60,10 +58,11 @@ CREATE TABLE user_items (
 );
 
 CREATE TABLE follow (
-    follower_id INTEGER PRIMARY KEY
+    follower VARCHAR
         REFERENCES users ON DELETE CASCADE,
-    following_id INTEGER[]
-        REFERENCES users ON DELETE CASCADE
+    following VARCHAR
+        REFERENCES users ON DELETE CASCADE,
+    PRIMARY KEY (follower, following)
 );
 
 CREATE TABLE user_wishlists_items (

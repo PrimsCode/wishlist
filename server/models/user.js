@@ -3,7 +3,7 @@
 const db = require("../db");
 const bcrypt = require("bcrypt");
 const { sqlForPartialUpdate } = require("../helpers/sql");
-const {userExistCheck} = require("../helpers/checks");
+const {userExistCheck, wishlistCategoryCheck, userWishlistExistCheck} = require("../helpers/checks");
 const {
   NotFoundError,
   BadRequestError,
@@ -166,6 +166,77 @@ class User {
 
     return `${username} has been deleted!`
   }
+
+
+
+/**Get all active wishlists of a specific user by username.
+   * Returns [{ id, wishlist_category, description }, ...]
+   **/
+ static async getAllWishlists(username) {
+  const result = await db.query(
+        `SELECT w.id, w.username, c.category, w.description
+         FROM user_wishlists w
+         INNER JOIN wishlist_categories c ON w.category_id = c.id
+         WHERE u.username = $1
+         ORDER BY c.category`,
+         [username]
+  );
+  return result.rows;
+}
+
+
+  /** Create a wishlist for a specific user by username
+   *  Requests {username, wishlist_category, description}
+   *  Returns {id, username, wishlist_category, description} 
+   *  Throws NotFoundError if username or wishlist_category is not found
+   * */
+   static async createWishlist({ username, wishlistCategory, description }) {
+    const duplicateCheck = await userExistCheck();
+    if (!duplicateCheck) throw new NotFoundError(`${username} doesn't exist!`);
+
+    const wishlistCategoryId = await wishlistCategoryCheck(wishlistCategory);
+    if (!wishlistCategoryId) throw new NotFoundError(`${wishlistCategory} doesn't exist!`);
+
+    const userWishlist = await userWishlistExistCheck(username, wishlistCategoryId);
+    if (userWishlist) throw new BadRequestError(`The ${wishlistCategory} wishlist already exists for ${username}`);
+
+    const result = await db.query(
+          `INSERT INTO user_wishlists
+          (username, category_id, description)
+          VALUES ($1, $2, $3)
+          RETURNING id, username, category_id, description`,
+        [
+          username,
+          wishlistCategoryId,
+          description
+        ],
+    );
+
+  const wishlist = result.rows[0];
+  return wishlist;
+}
+
+/** Deactivate a wishlist of a user by username
+ * TThrows NotFoundError if username or wishlist is not found
+ **/
+static async removeWishlist(username, wishlistCategory) {
+  const duplicateCheck = await userExistCheck();
+  if (!duplicateCheck) throw new NotFoundError(`${username} doesn't exist!`);
+
+  const wishlistCategoryId = await wishlistCategoryCheck(wishlistCategory);
+  if (!wishlistCategoryId) throw new NotFoundError(`${wishlistCategory} doesn't exist!`);
+
+  const result = await db.query(
+        `DELETE FROM user_wishlists
+         WHERE username = $1 AND category_id = $2
+         RETURNING id, username, category_id`,
+      [username, wishlistCategoryId],
+  );
+
+  const wishlist = result.rows[0]
+  if (!wishlist) throw new NotFoundError(`The ${wishlistCategory} wishlist doesn't exists for ${username}`);
+  return `${wishlistCategory} wishlist for ${username} has been deleted!`;
+}
 
 }
 

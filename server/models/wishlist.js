@@ -14,12 +14,9 @@ class Wishlist {
    **/
      static async getAll() {
       const result = await db.query(
-            `SELECT w.id, u.username, c.category, w.description
-             FROM user_wishlists w
-             INNER JOIN users u ON w.user_id = u.id 
-             INNER JOIN wishlist_categories c ON w.category_id = c.id 
-             WHERE active = true
-             ORDER BY c.category`,
+            `SELECT id, username, category, description
+             FROM user_wishlists
+             ORDER BY category`,
       );
       return result.rows;
     }
@@ -68,12 +65,11 @@ class Wishlist {
         const lowerCaseCategory = category.toLowerCase();
 
         const result = await db.query(
-              `SELECT w.id, u.username, c.category, w.description
+              `SELECT w.id, w.username, c.category, w.description
                FROM user_wishlists w
-               INNER JOIN users u ON w.user_id = u.id 
-               INNER JOIN wishlist_categories c ON w.category_id = c.id 
-               WHERE active = true AND c.category = $1
-               ORDER BY c.category`, 
+               INNER JOIN wishlist_categories c ON c.id = w.category_id
+               WHERE c.category = $1
+               ORDER BY category`, 
                [lowerCaseCategory]
         );
         return result.rows;
@@ -83,9 +79,6 @@ class Wishlist {
        *Throws NotFoundError if category does not exist
       **/
          static async removeWishlistCategory(category) {
-          const categoryCheck = await wishlistCategoryCheck(category);
-          if (!categoryCheck) throw new NotFoundError(`${category} does not exist!`);
-  
           const lowerCaseCategory = category.toLowerCase()
   
           const result = await db.query(
@@ -94,6 +87,8 @@ class Wishlist {
                  WHERE category = $1`, 
                  [lowerCaseCategory]
           );
+          const wishlistCategory = result.rows[0];
+          if (!wishlistCategory) throw new NotFoundError(`${category} doesn't exist!`);
           return `${category} has been deleted!`
         }
 }
