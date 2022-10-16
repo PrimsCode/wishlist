@@ -3,7 +3,7 @@
 const db = require("../db");
 const bcrypt = require("bcrypt");
 const { sqlForPartialUpdate } = require("../helpers/sql");
-const {userExistCheck, wishlistCategoryCheck, userWishlistExistCheck} = require("../helpers/checks");
+const {userExistCheck, wishlistCategoryCheck, userWishlistExistCheck, itemExistCheck} = require("../helpers/checks");
 const {
   NotFoundError,
   BadRequestError,
@@ -173,11 +173,15 @@ class User {
    * Returns [{ id, wishlist_category, description }, ...]
    **/
  static async getAllWishlists(username) {
+  // const existCheck = await userExistCheck();
+  // console.log(existCheck);
+  // if (!existCheck) throw new NotFoundError(`${username} doesn't exist!`);
+  // console.log("got to models");
   const result = await db.query(
         `SELECT w.id, w.username, c.category, w.description
          FROM user_wishlists w
          INNER JOIN wishlist_categories c ON w.category_id = c.id
-         WHERE u.username = $1
+         WHERE w.username = $1
          ORDER BY c.category`,
          [username]
   );
@@ -190,15 +194,19 @@ class User {
    *  Returns {id, username, wishlist_category, description} 
    *  Throws NotFoundError if username or wishlist_category is not found
    * */
-   static async createWishlist({ username, wishlistCategory, description }) {
-    const duplicateCheck = await userExistCheck();
-    if (!duplicateCheck) throw new NotFoundError(`${username} doesn't exist!`);
+   static async createWishlist(username, data) {
+    // console.log(username);
+    // const existCheck = await userExistCheck();
+    // console.log(existCheck);
+    // if (!existCheck) throw new NotFoundError(`${username} doesn't exist!`);
 
-    const wishlistCategoryId = await wishlistCategoryCheck(wishlistCategory);
-    if (!wishlistCategoryId) throw new NotFoundError(`${wishlistCategory} doesn't exist!`);
+    const wishlistCategory = await wishlistCategoryCheck(data.category);
+    console.log(wishlistCategory.id);
+    if (!wishlistCategory) throw new NotFoundError(`${data.category} doesn't exist!`);
 
-    const userWishlist = await userWishlistExistCheck(username, wishlistCategoryId);
-    if (userWishlist) throw new BadRequestError(`The ${wishlistCategory} wishlist already exists for ${username}`);
+    const userWishlist = await userWishlistExistCheck(username, wishlistCategory.id);
+    console.log(userWishlist);
+    if (userWishlist) throw new BadRequestError(`The ${data.category} wishlist already exists for ${username}`);
 
     const result = await db.query(
           `INSERT INTO user_wishlists
@@ -207,8 +215,8 @@ class User {
           RETURNING id, username, category_id, description`,
         [
           username,
-          wishlistCategoryId,
-          description
+          wishlistCategory.id,
+          data.description
         ],
     );
 
@@ -216,12 +224,37 @@ class User {
   return wishlist;
 }
 
+/**Get wishlist by category of a specific user by username.
+   * Returns [{ id, useranme, wishlist_category, description }, ...]
+   **/
+ static async getWishlistByCategory(username, wishlistCategory) {
+  // const existCheck = await userExistCheck();
+  // if (!existCheck) throw new NotFoundError(`${username} doesn't exist!`);
+
+  const wishlistCategoryFound = await wishlistCategoryCheck(wishlistCategory);
+  if (!wishlistCategoryFound) throw new NotFoundError(`${wishlistCategory} doesn't exist!`);
+
+  const userWishlist = await userWishlistExistCheck(username, wishlistCategoryFound.id);
+  if (!userWishlist) throw new BadRequestError(`The ${wishlistCategory} wishlist doesn't exist for ${username}`);
+
+  const result = await db.query(
+        `SELECT w.id, w.username, c.category, w.description
+         FROM user_wishlists w
+         INNER JOIN wishlist_categories c ON w.category_id = c.id
+         WHERE w.username = $1 AND w.category_id = $2`,
+         [username, wishlistCategoryFound.id]
+  );
+  return result.rows;
+}
+
+
+
 /** Deactivate a wishlist of a user by username
  * TThrows NotFoundError if username or wishlist is not found
  **/
 static async removeWishlist(username, wishlistCategory) {
-  const duplicateCheck = await userExistCheck();
-  if (!duplicateCheck) throw new NotFoundError(`${username} doesn't exist!`);
+  // const duplicateCheck = await userExistCheck();
+  // if (!duplicateCheck) throw new NotFoundError(`${username} doesn't exist!`);
 
   const wishlistCategoryId = await wishlistCategoryCheck(wishlistCategory);
   if (!wishlistCategoryId) throw new NotFoundError(`${wishlistCategory} doesn't exist!`);
@@ -230,13 +263,40 @@ static async removeWishlist(username, wishlistCategory) {
         `DELETE FROM user_wishlists
          WHERE username = $1 AND category_id = $2
          RETURNING id, username, category_id`,
-      [username, wishlistCategoryId],
+      [username, wishlistCategoryId.id],
   );
 
   const wishlist = result.rows[0]
   if (!wishlist) throw new NotFoundError(`The ${wishlistCategory} wishlist doesn't exists for ${username}`);
   return `${wishlistCategory} wishlist for ${username} has been deleted!`;
 }
+
+  /** Update a user by their username
+   * Partial update is allowed
+   * Requests { firstName, lastName, password, profilePic}
+   * Returns { username, firstName, lastName, profilePic, isAdmin }
+   * Throws NotFoundError if not found.
+   */
+   static async addItemToWishlist(username, wishlistCategory, data) {
+
+    const itemFound = await itemExistCheck(data.itemName);
+
+    const result = await db.query(
+      `INSERT INTO user_items
+      (item_id, username, must_have)
+      VALUES ($1, $2, $3)
+      RETURNING id`, [itemFound.id, username, data.mustHave],
+    );
+
+    const addedItem = result.rows[0];
+    
+    const wishlistRes = await db.query(
+      `INSERT INTO user_wishlist_items
+      (user_item_id, user_wishlists_id)
+      VALUES ($1, $2)
+      RETURNING `
+    )
+  }
 
 }
 

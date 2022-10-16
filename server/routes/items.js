@@ -84,7 +84,7 @@ const router = express.Router();
   router.delete("/:id", ensureAdmin, async function (req, res, next) {
     try {
       await Item.remove(req.params.id);
-      return res.json({ deleted: req.params.id });
+      return res.json({ deleted: `item with id ${req.params.id}` });
     } catch (err) {
       return next(err);
     }

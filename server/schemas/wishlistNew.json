@@ -1,0 +1,34 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "default": {},
+    "title": "WishlistNew",
+    "required": [
+        "category",
+        "description"
+    ],
+    "properties": {
+        "description": {
+            "type": "string",
+            "default": "",
+            "title": "The description Schema",
+            "examples": [
+                "All the items I want for my birthday."
+            ]
+        },
+        "category": {
+            "type": "string",
+            "default": "",
+            "title": "The category Schema",
+            "examples": [
+                "birthday"
+            ]
+        }
+    },
+    "examples": [{
+        "name": "parishilton",
+        "description": "All the items I want for my birthday.",
+        "category": "birthday"
+    }]
+}

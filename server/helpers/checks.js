@@ -12,7 +12,7 @@ const userExistCheck = async(username) => {
 
 const itemExistCheck = async(name, link) => {
     const item = await db.query(
-        `SELECT name
+        `SELECT id, name
         FROM items
         WHERE name = $1 AND link = $2`, [name, link],
       );
@@ -48,6 +48,7 @@ const itemCategoryCheck = async(category) => {
       if (wishlistCategory.rows[0] != undefined) return wishlistCategory.rows[0];
       return false;
     }
+
 
     
   const userWishlistExistCheck = async(username, categoryId) => {

@@ -86,7 +86,8 @@ class Item {
   static async update(id, data) {
     if (data.category) {
       const categoryId = await itemCategoryCheck(data.category);
-      data.category = categoryId;
+      data.categoryId = categoryId;
+      delete data.category;
     }
 
     const { setCols, values } = sqlForPartialUpdate(
@@ -96,10 +97,10 @@ class Item {
           price: "price",
           description: "description",
           link: "link",
-          imageLink:"imageLink",
-          categoryId:"categoryId"
+          imageLink:"image_link",
+          categoryId:"category_id"
         });
-
+        
     const idVarIdx = "$" + (values.length + 1);
     const querySql = `UPDATE items 
                       SET ${setCols} 
