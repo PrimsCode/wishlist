@@ -9,7 +9,7 @@ class WishlistApi {
     console.debug("API Call:", endpoint, data, method);
     //pass token through the header
     const url = `${BASE_URL}/${endpoint}`;
-    const headers = { Authorization: `Bearer ${JoblyApi.token}` };
+    const headers = { Authorization: `Bearer ${WishlistApi.token}` };
     const params = (method === "get")
         ? data
         : {};
