@@ -140,6 +140,24 @@ const router = express.Router();
   // });
 
 
+  router.post("/:username/wishlists/:category", ensureCorrectUserOrAdmin, async function (req, res, next) {
+    try {
+      const validator = jsonschema.validate(req.body, WishlistNewSchema);
+      if (!validator.valid) {
+        const errs = validator.errors.map(e => e.stack);
+        throw new BadRequestError(errs);
+      }
+      console.log(req.params.username);
+      console.log(req.body.category);
+      console.log(req.body.description);
+      const wishlist = await User.createWishlist(req.params.username, req.body);
+      return res.json({ wishlist});
+    } catch (err) {
+      return next(err);
+    }
+  });
+
+
   
   
   /** DELETE user by username
