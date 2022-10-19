@@ -37,13 +37,13 @@ CREATE TABLE user_wishlists (
     description VARCHAR(300)
 );
 
-CREATE TABLE status (
-    id SERIAL PRIMARY KEY,
-    purchase BOOLEAN NOT NULL DEFAULT FALSE,
-    anonymous BOOLEAN NOT NULL DEFAULT FALSE, 
-    username VARCHAR
-        REFERENCES users ON DELETE CASCADE
-);
+-- CREATE TABLE status (
+--     id SERIAL PRIMARY KEY,
+--     purchase BOOLEAN NOT NULL DEFAULT FALSE,
+--     anonymous BOOLEAN NOT NULL DEFAULT FALSE, 
+--     username VARCHAR
+--         REFERENCES users ON DELETE CASCADE
+-- );
 
 CREATE TABLE user_items (
     id SERIAL PRIMARY KEY,
@@ -53,8 +53,7 @@ CREATE TABLE user_items (
         REFERENCES items ON DELETE CASCADE,
     active BOOLEAN NOT NULL DEFAULT TRUE,
     must_have BOOLEAN NOT NULL DEFAULT FALSE,
-    status_id INTEGER NOT NULL
-        REFERENCES status ON DELETE CASCADE
+    purchase BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE follow (

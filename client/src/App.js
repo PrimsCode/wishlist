@@ -65,6 +65,8 @@ function App() {
       return false;
     }
   }
+
+  
   
   //show loading symbol while information is loading
   if(isLoading) return <Loading />
