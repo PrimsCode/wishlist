@@ -1,9 +1,10 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
 import {Grid, Typography, FormControl, TextField, Button, Paper, Alert} from '@mui/material';
-import WishlistApi from '../helpers/WishlistAPI';
+import UserContext from '../helpers/UserContext';
 
-const AuthForm = ({setToken, user, getCurrentUser, formType = "register"}) => {
+const AuthForm = ({userFunction, formType}) => {
+    const {user} = useContext(UserContext);
     const centering = {display: "flex", justifyContent: "center", alignItems:"center", margin:"20px"};
     const formStyle = { m: 1, width: 300, alignItems: "center" };
     const container = {
@@ -39,25 +40,11 @@ const AuthForm = ({setToken, user, getCurrentUser, formType = "register"}) => {
         message: ""
     });
 
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     
-    // if(user !== null && Object.keys(user).length > 0){
-    //     navigate('/profile');
-    // }
-
-    async function register(data) {
-        try {
-          let token = await WishlistApi.registerNewUser(data);
-          localStorage.setItem("token", token);
-          setToken(token);
-          getCurrentUser(token);
-        //   handleSuccess();
-          return { success: true };
-        } catch (errors) {
-          console.error("signup failed", errors);
-          handleError(errors);
-        }
-      }
+    if(user !== null && Object.keys(user).length > 0){
+        navigate('/profile');
+    }
 
     //handle form change, submit, and validate if all data are inputted
     const handleChange = (e) => {
@@ -72,10 +59,10 @@ const AuthForm = ({setToken, user, getCurrentUser, formType = "register"}) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (handleValidation() === true){
-            register(formData);
-            setFormData();
+            const saveUser = await userFunction(formData);
+            if(!saveUser) handleError("Failed! Please try again!");
+            setFormData(initialState);
         }
-        return ;
     }
 
     const handleValidation = () => {
@@ -88,8 +75,8 @@ const AuthForm = ({setToken, user, getCurrentUser, formType = "register"}) => {
         return true;
     }
 
-    const handleError = (errMsg) => {
-        setError({state:true, message: errMsg});
+    const handleError = (msg) => {
+        setError({state:true, message: msg});
         setTimeout(() => {
             setError({state:false, message: ""});
         }, 5000);
@@ -99,12 +86,18 @@ const AuthForm = ({setToken, user, getCurrentUser, formType = "register"}) => {
     return (
         <Grid container style={centering}>
             <Grid item xs={12}>
-                {error.state == true && 
+                {error.state === true && 
                     <Alert severity='error'>{error.message} -- try again!</Alert>
                 }
             </Grid>
             <Paper style={container}>
-            <Typography variant="h4" style={{marginBottom:'10px'}}>Register</Typography>
+
+            {formType === 'register' ? 
+                <Typography variant="h4" style={{marginBottom:'10px'}}>Register</Typography>
+                :
+                <Typography variant="h4" style={{marginBottom:'10px'}}>Login</Typography>
+            }
+            
             {setForm.map((data) => (
                  <FormControl sx={formStyle}>
                     <TextField
@@ -116,7 +109,8 @@ const AuthForm = ({setToken, user, getCurrentUser, formType = "register"}) => {
                         onChange={handleChange} />
                 </FormControl>
             ))}
-                <Button onClick={handleSubmit} variant="contained" color="primary" style={{margin:'10px'}}>Register</Button>
+
+                <Button onClick={handleSubmit} variant="contained" color="primary" style={{margin:'10px'}}>Submit</Button>
             </Paper>
         </Grid>
         )

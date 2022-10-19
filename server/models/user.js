@@ -98,7 +98,7 @@ class User {
   }
 
   /** Get user by username
-   * Returns { username, first_name, last_name, profile_pic, is_admin}
+   * Returns { username, first_name, last_name, profile_pic, is_admin, wishlists[], items[]}
    * Throws NotFoundError if user not found.
    **/
   static async get(username) {
@@ -115,6 +115,29 @@ class User {
 
     const user = userRes.rows[0];
     if (!user) throw new NotFoundError(`${username} doesn't exist!`);
+
+    const wishlistRes = await db.query(
+      `SELECT w.id, c.category
+      FROM user_wishlists w
+      INNER JOIN wishlist_categories c ON w.category_id = c.id
+      WHERE w.username = $1
+      ORDER BY c.category`,
+      [username],
+    );
+    user.wishlists = wishlistRes.rows;
+
+    const itemRes = await db.query(
+      `SELECT ui.id, i.name, c.category, i.description, i.link, i.image_link, i.price
+      FROM user_items ui
+      INNER JOIN items i ON ui.item_id = i.id
+      INNER JOIN item_categories c ON i.category_id = c.id
+      WHERE ui.username = $1
+      ORDER BY i.name`,
+      [username],
+    );
+
+    user.items = itemRes.rows;
+
     return user;
   }
 
@@ -185,6 +208,7 @@ class User {
          ORDER BY c.category`,
          [username]
   );
+
   return result.rows;
 }
 
@@ -234,9 +258,6 @@ class User {
   const wishlistCategoryFound = await wishlistCategoryCheck(wishlistCategory);
   if (!wishlistCategoryFound) throw new NotFoundError(`${wishlistCategory} doesn't exist!`);
 
-  const userWishlist = await userWishlistExistCheck(username, wishlistCategoryFound.id);
-  if (!userWishlist) throw new BadRequestError(`The ${wishlistCategory} wishlist doesn't exist for ${username}`);
-
   const result = await db.query(
         `SELECT w.id, w.username, c.category, w.description
          FROM user_wishlists w
@@ -244,7 +265,25 @@ class User {
          WHERE w.username = $1 AND w.category_id = $2`,
          [username, wishlistCategoryFound.id]
   );
-  return result.rows;
+
+  const userWishlist = result.rows[0];
+  if (!userWishlist) throw new NotFoundError(`${username} doesn't have a ${wishlistCategory} wishlist!`);
+
+
+  const itemRes = await db.query(
+    `SELECT i.name, c.category, i.description, i.link, i.image_link, i.price
+    FROM user_wishlists_items uwi
+    INNER JOIN user_items ui ON uwi.user_items_id = ui.id
+    INNER JOIN items i ON ui.item_id = i.id
+    INNER JOIN item_categories c ON i.category_id = c.id
+    WHERE uwi.user_wishlists_id = $1
+    ORDER BY i.name`,
+    [wishlistCategoryFound.id],
+  );
+
+  userWishlsit.items = itemRes.rows;
+
+  return userWishlist;
 }
 
 

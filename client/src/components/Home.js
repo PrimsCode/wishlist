@@ -1,36 +1,29 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {Grid, Button, Typography} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import UserContext from '../helpers/UserContext';
 
 const Home = () => {
+    const {user} = useContext(UserContext);
     const centering = {display: "flex", justifyContent: "center", alignItems:"center"};
-    const mainGrid = {border:"solid", minWidth:"100%", height:"100vh", display: "flex", justifyContent: "center", alignItems:"center"};
+    // const mainGrid = {border:"solid", minWidth:"100%", height:"100vh", display: "flex", justifyContent: "center", alignItems:"center"};
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        if (user === null || user.length === 0) {
+            navigate('/register');
+        }
+        navigate('/profile');
+      };
 
     return (
-        <Grid container style={mainGrid}>
-            <Grid item style={centering} >
-                <Typography variant="h2">Wishlist</Typography>
-            </Grid>
-         
-            <Grid item style={centering}>
-                <Button variant="contained" color='primary'>Enter</Button>
-            </Grid>
-         
-            {/* <Grid item xs={12} style={centering} margin="30px">
-                <Typography variant='h1'>Jobly</Typography>
+        <Grid container style={centering}>
+            <Grid item xs={12} style={centering} marginTop="20%">
+                <Typography variant='h2'>Wishlist</Typography>
             </Grid>
             <Grid item xs={12} style={centering}>
-                <Typography variant='h6'>All the jobs in one, convenient place.</Typography>
+                <Button variant="contained" color='primary' onClick={handleClick}>Enter</Button>
             </Grid>
-            {user === null || user.length === 0 ?
-                <Grid item xs={12} style={centering}>
-                    <Button href="/login" variant='contained' style={{margin:"5px"}}>Log in</Button>
-                    <Button href="/signup" variant='contained' style={{margin:"5px"}}>Sign up</Button>
-                </Grid>
-            :
-                <Grid item xs={12} style={centering}>
-                    <Typography variant='h3'>Welcome Back, {user.username}!</Typography>
-                </Grid>         
-        } */}
         </Grid>
     )
 }
