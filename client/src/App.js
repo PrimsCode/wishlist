@@ -13,6 +13,7 @@ import Home from './components/Home'
 import AuthForm from './components/AuthForm';
 import Loading from './components/Loading';
 import UserProfile from './components/UserProfile';
+import ItemList from './components/ItemList';
 
 export const TOKEN_STORAGE_ID = "wishlist-token";
 
@@ -81,6 +82,7 @@ function App() {
             <Route path="/register" element={<AuthForm userFunction={register} formType="register" />} />
             <Route path="/login" element={<AuthForm userFunction={login} formType="login" />} />
             <Route path="/profile" element={<UserProfile />} />
+            <Route path="/items" element={<ItemList />} />
 
           </Routes>
         </UserContext.Provider>

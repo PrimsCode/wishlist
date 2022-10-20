@@ -140,7 +140,7 @@ const router = express.Router();
   // });
 
 
-  router.post("/:username/wishlists/:category", ensureCorrectUserOrAdmin, async function (req, res, next) {
+  router.patch("/:username/wishlists/:category", ensureCorrectUserOrAdmin, async function (req, res, next) {
     try {
       const validator = jsonschema.validate(req.body, WishlistNewSchema);
       if (!validator.valid) {

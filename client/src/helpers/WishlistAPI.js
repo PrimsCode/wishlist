@@ -24,6 +24,8 @@ class WishlistApi {
 
   // Individual API routes
 
+  /**USERS API ******************************************************/
+
   //post new user during signup and create token
   static async registerNewUser(data) {
     let res = await this.request(`auth/register`, data, "post");
@@ -46,31 +48,67 @@ class WishlistApi {
   static async updateUser(username, data) {
     let res = await this.request(`users/${username}`, data, "patch");
     return res.user;
-  }  
+  }
 
-//   /** Get details on a company by handle. */
-//   static async getCompany(handle) {
-//     let res = await this.request(`companies/${handle}`);
-//     return res.company;
-//   }
-  
-//   //get all companies
-//   static async getCompanies(handle) {
-//     let res = await this.request("companies", { handle });
-//     return res.companies;
-//   }
 
-//   //get all jobs
-//   static async getJobs(title) {
-//     let res = await this.request(`jobs`, { title });
-//     return res.jobs;
-//   }
+  /**WISHLISTS API *****************************************************/
 
-//   //post apply to a job
-//   static async applyToJob(username, id) {
-//     let res = await this.request(`users/${username}/jobs/${id}`, {}, "post");
-//     return res;
-//   }
+  //get all wishlists in the database
+  static async getAllWishlists() {
+    let res = await this.request(`wishlists`);
+    return res.wishlists;
+  }
+
+  //get all wishlist categories in the database
+  static async getAllWishlistCategories() {
+    let res = await this.request(`wishlists/categories`);
+    return res.categories;
+  }
+
+  //get all wishlists of a user
+  static async getUserWishlists(username) {
+    let res = await this.request(`users/${username}/wishlists`);
+    return res.wishlists;
+  }
+
+  //create a new wishlist for a user
+  static async createUserWishlist(username, data) {
+    let res = await this.request(`users/${username}/wishlists`, data, "post");
+    return res.wishlist;
+  }
+
+  //get all wishlist categories in the database
+  static async getUserWishlistByCategory(username, category) {
+    let res = await this.request(`users/${username}/wishlists/${category}`);
+    return res.wishlist;
+  }
+
+  /**ITEMS API *****************************************************/
+
+  //get all items in the database
+  static async getItems() {
+    let res = await this.request(`items`);
+    return res.items;
+  }
+
+  //create a new item
+  static async createNewItem(data) {
+    let res = await this.request(`items`, data, "post");
+    return res.items;
+  }
+
+  //get an item in the database
+  static async getItem(id, name) {
+    let res = await this.request(`items/${id}`, {name});
+    return res.item;
+  }
+
+  //update an item in the database
+  static async updateItem(id, data) {
+    let res = await this.request(`items/${id}`, data, "patch");
+    return res.item;
+  }
+
 }
 
 export default WishlistApi;

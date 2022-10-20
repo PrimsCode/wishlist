@@ -77,3 +77,40 @@ VALUES ('Eggo Homestyle Waffles', 2.85, 'Best frozen waffles in the world',
             16, 'https://www.amazon.com/Sparkling-Prebiotic-Immunity-Benefits-Beverages/dp/B094LFK6DF/ref=sr_1_23?crid=H3OY7AQN2HVG&keywords=health&qid=1665856764&qu=eyJxc2MiOiI3Ljk1IiwicXNhIjoiNy44OCIsInFzcCI6IjcuNjYifQ%3D%3D&sprefix=health%2Caps%2C160&sr=8-23', 
             'https://m.media-amazon.com/images/I/51QvmB-vcOL._SX300_SY300_QL70_FMwebp_.jpg')
         ;
+
+INSERT INTO user_wishlists (username, category_id, description)
+VALUES ('sheldoncopper', 5, 'What I want for Christmas'),
+        ('sheldoncopper', 1, 'What I want for my Birthday'),
+        ('sheldoncopper', 9, 'What I want for Valentines'),
+        ('testadmin', 5, 'What I want for Christmas'),
+        ('testuser', 1, 'What I want for my Birthday'),
+        ('testuser', 9, 'What I want for Valentines'),
+        ('testuser', 5, 'What I want for Christmas'),
+        ('eleven', 1, 'What I want for my Birthday')
+    ;
+
+INSERT INTO user_items (item_id, username, must_have)
+VALUES (3, 'eleven', true),
+        (4, 'sheldoncopper', true),
+        (7, 'sheldoncopper', false),
+        (9, 'testeadmin', true),
+        (10, 'testadmin', false),
+        (5, 'testuser', true),
+        (6, 'testuser', false)
+;
+
+INSERT INTO user_wishlists_items (user_items_id, user_wishlists_id)
+VALUES (10, 2),
+        (10, 3),
+        (10, 7),
+        (11, 3),
+        (11, 7),
+        (1, 11),
+        (12, 8),
+        (12, 9),
+        (13, 10),
+        (13, 8),
+        (8, 4),
+        (8, 5),
+        (9, 5)
+;

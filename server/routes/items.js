@@ -36,7 +36,8 @@ const router = express.Router();
    **/
  router.get("/", async function (req, res, next) {
     try {
-      const items = await Item.getAll();
+      const q = req.query;
+      const items = await Item.getAll(q);
       return res.json({ items });
     } catch (err) {
       return next(err);

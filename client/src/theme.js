@@ -20,7 +20,23 @@ const theme = createTheme({
         // },
     },
     typography: {
-        fontFamily: "'Rubik', 'Roboto', sans-serif"
+        fontFamily: "'Rubik', 'Roboto', sans-serif",
+        h6: {
+            fontFamily: "'Rubik', 'Roboto', sans-serif",
+            fontWeight: 400
+        },
+        body1: {
+            fontFamily: "'Roboto', sans-serif"
+        },
+        body2: {
+            fontFamily: "'Roboto', sans-serif",
+            fontWeight: 300
+        },
+        body3: {
+            fontFamily: "'Roboto', sans-serif",
+            fontWeight: 200
+
+        }
     }
 
 })
