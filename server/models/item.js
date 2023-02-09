@@ -20,8 +20,9 @@ class Item {
                   i.price,
                   i.description,
                   i.link,
-                  i.image_link AS "imageLink",
-                  c.category AS "category"
+                  i.image_link,
+                  c.category,
+                  c.color_code
            FROM items i
            INNER JOIN item_categories c ON c.id = i.category_id 
            ORDER BY i.name`;
@@ -54,8 +55,9 @@ class Item {
                   i.price,
                   i.description,
                   i.link,
-                  i.image_link AS "imageLink",
-                  c.category AS "category"
+                  i.image_link,
+                  c.category,
+                  c.color_code
            FROM items i
            INNER JOIN item_categories c ON c.id = i.category_id 
            WHERE i.id = $1`,
@@ -64,6 +66,19 @@ class Item {
 
     const item = itemRes.rows[0];
     if (!item) throw new NotFoundError(`${name} doesn't exist!`);
+
+    const wishlistRes = await db.query(
+      `SELECT uwi.wishlist_id, w.title, w.username, c.category, w.description, w.banner_img
+      FROM user_wishlist_items uwi
+      INNER JOIN user_wishlists w ON uwi.wishlist_id = w.id
+      INNER JOIN wishlist_categories c ON w.category_id = c.id
+      WHERE uwi.item_id = $1
+      ORDER BY i.name`,
+      [id],
+    );
+
+    item.wishlists = wishlistRes.rows;
+
     return item;
   }
 
@@ -148,7 +163,7 @@ class Item {
    **/
    static async getAllCategories() {
     const result = await db.query(
-          `SELECT id, category
+          `SELECT *
            FROM item_categories
            ORDER BY category`,
     );
@@ -160,7 +175,7 @@ class Item {
  * Returns {id, category}
  * Throws BadRequestError if category already exists
  **/
-   static async createNewCategory(category) {
+   static async createNewCategory(category,colorCode) {
     const categoryCheck = await itemCategoryCheck(category);
     if (categoryCheck) throw new BadRequestError(`${category} arleady exists!`);
     
@@ -168,10 +183,10 @@ class Item {
 
     const result = await db.query(
           `INSERT INTO item_categories
-          (category)
-          VALUES ($1)
-          RETURNING id, category`,
-          [lowerCaseCategory]
+          (category, color_code)
+          VALUES ($1, $2)
+          RETURNING id, category, color_code`,
+          [lowerCaseCategory, colorCode]
     );
     return result.rows[0];
   }
@@ -187,7 +202,7 @@ class Item {
       const lowerCaseCategory = category.toLowerCase();
 
       const result = await db.query(
-            `SELECT i.id, i.username, c.category, i.description
+            `SELECT i.id, i.username, c.category, i.description, c.color_code
              FROM items i
              INNER JOIN item_categories c ON c.id = i.category_id
              WHERE c.category = $1

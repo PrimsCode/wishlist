@@ -14,10 +14,11 @@ class Wishlist {
    **/
      static async getAll() {
       const result = await db.query(
-            `SELECT w.id, w.username, c.category, w.description
+            `SELECT w.id, w.username, u.profile_pic, c.category, c.color_code, w.title, w.description, w.banner_img
              FROM user_wishlists w
+             INNER JOIN users u ON w.username = u.username
              INNER JOIN wishlist_categories c ON w.category_id = c.id
-             ORDER BY c.category`,
+             ORDER BY c.category`
       );
       return result.rows;
     }
@@ -27,7 +28,7 @@ class Wishlist {
    **/
      static async getAllCategories() {
       const result = await db.query(
-            `SELECT id, category
+            `SELECT *
              FROM wishlist_categories
              ORDER BY category`,
       );
@@ -39,7 +40,7 @@ class Wishlist {
    * Returns {id, category}
    * Throws BadRequestError if category already exists
    **/
-     static async createNewCategory(category) {
+     static async createNewCategory(category, colorCode) {
       const categoryCheck = await wishlistCategoryCheck(category);
       if (categoryCheck) throw new BadRequestError(`${category} arleady exists!`);
       
@@ -47,10 +48,10 @@ class Wishlist {
 
       const result = await db.query(
             `INSERT INTO wishlist_categories
-            (category)
-            VALUES ($1)
-            RETURNING id, category`,
-            [lowerCaseCategory]
+            (category, color_code)
+            VALUES ($1, $2)
+            RETURNING id, category, color_code`,
+            [lowerCaseCategory, colorCode]
       );
       return result.rows[0];
     }
@@ -59,14 +60,14 @@ class Wishlist {
    * Returns [{id, username, wishlsit_category, description}, ...]
    * Throws NotFoundError if category does not exist
    **/
-       static async getAllWishlistOfCategory(category) {
+       static async getAllWishlistsOfCategory(category) {
         const categoryCheck = await wishlistCategoryCheck(category);
         if (!categoryCheck) throw new NotFoundError(`${category} does not exist!`);
 
         const lowerCaseCategory = category.toLowerCase();
 
         const result = await db.query(
-              `SELECT w.id, w.username, c.category, w.description
+              `SELECT w.id, w.username, c.category, w.title, w.description, w.banner_img
                FROM user_wishlists w
                INNER JOIN wishlist_categories c ON c.id = w.category_id
                WHERE c.category = $1

@@ -9,7 +9,8 @@ CREATE TABLE users (
 
 CREATE TABLE item_categories (
     id SERIAL PRIMARY KEY,
-    category VARCHAR(40) UNIQUE NOT NULL
+    category VARCHAR(40) UNIQUE NOT NULL,
+    color_code VARCHAR UNIQUE NOT NULL
 );
 
 CREATE TABLE items (
@@ -25,7 +26,8 @@ CREATE TABLE items (
 
 CREATE TABLE wishlist_categories (
     id SERIAL PRIMARY KEY,
-    category VARCHAR(40) UNIQUE NOT NULL
+    category VARCHAR(40) UNIQUE NOT NULL,
+    color_code VARCHAR UNIQUE NOT NULL
 );
 
 CREATE TABLE user_wishlists (
@@ -34,26 +36,20 @@ CREATE TABLE user_wishlists (
         REFERENCES users ON DELETE CASCADE,
     category_id INTEGER NOT NULL
         REFERENCES wishlist_categories ON DELETE CASCADE,
-    description VARCHAR(300)
+    description VARCHAR(300),
+    title VARCHAR(300) NOT NULL,
+    banner_img VARCHAR
 );
 
--- CREATE TABLE status (
---     id SERIAL PRIMARY KEY,
---     purchase BOOLEAN NOT NULL DEFAULT FALSE,
---     anonymous BOOLEAN NOT NULL DEFAULT FALSE, 
---     username VARCHAR
---         REFERENCES users ON DELETE CASCADE
--- );
-
-CREATE TABLE user_items (
-    id SERIAL PRIMARY KEY,
-    username VARCHAR NOT NULL
-        REFERENCES users ON DELETE CASCADE,
+CREATE TABLE user_wishlist_items (
     item_id INTEGER NOT NULL
         REFERENCES items ON DELETE CASCADE,
+    wishlist_id INTEGER NOT NULL
+        REFERENCES user_wishlists ON DELETE CASCADE,
     active BOOLEAN NOT NULL DEFAULT TRUE,
     must_have BOOLEAN NOT NULL DEFAULT FALSE,
-    purchase BOOLEAN NOT NULL DEFAULT FALSE
+    purchase BOOLEAN NOT NULL DEFAULT FALSE,
+    PRIMARY KEY (item_id, wishlist_id)
 );
 
 CREATE TABLE follow (
@@ -62,12 +58,4 @@ CREATE TABLE follow (
     following VARCHAR
         REFERENCES users ON DELETE CASCADE,
     PRIMARY KEY (follower, following)
-);
-
-CREATE TABLE user_wishlists_items (
-    user_items_id INTEGER
-        REFERENCES user_items ON DELETE CASCADE,
-    user_wishlists_id INTEGER
-        REFERENCES user_wishlists ON DELETE CASCADE,
-    PRIMARY KEY (user_items_id, user_wishlists_id)
 );

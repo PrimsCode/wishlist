@@ -24,6 +24,22 @@
             "examples": [
                 "birthday"
             ]
+        },
+        "title": {
+            "type": "string",
+            "default": "",
+            "title": "The title Schema",
+            "examples": [
+                "My Sweet Sixteen"
+            ]
+        },
+        "bannerImg": {
+            "type": "string",
+            "default": "",
+            "title": "The bannerImg Schema",
+            "examples": [
+                "https://img.glyphs.co/img?src=aHR0cHM6Ly9zMy5tZWRpYWxvb3QuY29tL2Jsb2ctaW1hZ2VzL2NvbmZldHRpLXNoYXBlcy10dXQtcG9zdC1pbWFnZS5qcGc_bXRpbWU9MjAxNjExMTUxMDI5NTY&q=75&enlarge=true&h=215&w=570"
+            ]
         }
     },
     "examples": [{

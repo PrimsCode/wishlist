@@ -98,7 +98,7 @@ class User {
   }
 
   /** Get user by username
-   * Returns { username, first_name, last_name, profile_pic, is_admin, wishlists[], items[]}
+   * Returns { username, first_name, last_name, profile_pic, is_admin, wishlists[]}
    * Throws NotFoundError if user not found.
    **/
   static async get(username) {
@@ -125,18 +125,6 @@ class User {
       [username],
     );
     user.wishlists = wishlistRes.rows;
-
-    const itemRes = await db.query(
-      `SELECT ui.id, i.name, c.category, i.description, i.link, i.image_link, i.price
-      FROM user_items ui
-      INNER JOIN items i ON ui.item_id = i.id
-      INNER JOIN item_categories c ON i.category_id = c.id
-      WHERE ui.username = $1
-      ORDER BY i.name`,
-      [username],
-    );
-
-    user.items = itemRes.rows;
 
     return user;
   }
@@ -201,7 +189,7 @@ class User {
   // if (!existCheck) throw new NotFoundError(`${username} doesn't exist!`);
   // console.log("got to models");
   const result = await db.query(
-        `SELECT w.id, w.username, c.category, w.description
+        `SELECT w.id, w.username, c.category, c.color_code, w.title, w.description, w.banner_img
          FROM user_wishlists w
          INNER JOIN wishlist_categories c ON w.category_id = c.id
          WHERE w.username = $1
@@ -228,19 +216,21 @@ class User {
     console.log(wishlistCategory.id);
     if (!wishlistCategory) throw new NotFoundError(`${data.category} doesn't exist!`);
 
-    const userWishlist = await userWishlistExistCheck(username, wishlistCategory.id);
+    const userWishlist = await userWishlistExistCheck(username, wishlistCategory.id, data.title);
     console.log(userWishlist);
-    if (userWishlist) throw new BadRequestError(`The ${data.category} wishlist already exists for ${username}`);
+    if (userWishlist) throw new BadRequestError(`The ${data.title} wishlist already exists for ${username}`);
 
     const result = await db.query(
           `INSERT INTO user_wishlists
-          (username, category_id, description)
-          VALUES ($1, $2, $3)
-          RETURNING id, username, category_id, description`,
+          (username, category_id, title, description, banner_img)
+          VALUES ($1, $2, $3, $4, $5)
+          RETURNING id, username, category_id, title, description, banner_img`,
         [
           username,
           wishlistCategory.id,
-          data.description
+          data.title,
+          data.description,
+          data.bannerImg
         ],
     );
 
@@ -248,10 +238,10 @@ class User {
   return wishlist;
 }
 
-/**Get wishlist by category of a specific user by username.
-   * Returns [{ id, useranme, wishlist_category, description }, ...]
+/**Get wishlists by category of a specific user
+   * Returns [{ id, useranme, wishlist_category, description, title, banner_img }, ...]
    **/
- static async getWishlistByCategory(username, wishlistCategory) {
+ static async getWishlistsByCategory(username, wishlistCategory) {
   // const existCheck = await userExistCheck();
   // if (!existCheck) throw new NotFoundError(`${username} doesn't exist!`);
 
@@ -259,33 +249,54 @@ class User {
   if (!wishlistCategoryFound) throw new NotFoundError(`${wishlistCategory} doesn't exist!`);
 
   const result = await db.query(
-        `SELECT w.id, w.username, c.category, w.description
+        `SELECT w.id, w.username, c.category, c.color_code, w.description, w.title, w.banner_img
          FROM user_wishlists w
          INNER JOIN wishlist_categories c ON w.category_id = c.id
          WHERE w.username = $1 AND w.category_id = $2`,
          [username, wishlistCategoryFound.id]
   );
 
-  const userWishlist = result.rows[0];
-  if (!userWishlist) throw new NotFoundError(`${username} doesn't have a ${wishlistCategory} wishlist!`);
+  const userWishlists = result.rows;
+  if (!userWishlists) throw new NotFoundError(`${username} doesn't have a ${wishlistCategory} wishlist!`);
+
+  return userWishlists;
+}
 
 
-  const itemRes = await db.query(
-    `SELECT i.name, c.category, i.description, i.link, i.image_link, i.price
-    FROM user_wishlists_items uwi
-    INNER JOIN user_items ui ON uwi.user_items_id = ui.id
-    INNER JOIN items i ON ui.item_id = i.id
-    INNER JOIN item_categories c ON i.category_id = c.id
-    WHERE uwi.user_wishlists_id = $1
-    ORDER BY i.name`,
-    [wishlistCategoryFound.id],
+/**Get a specific wishlist by category and title of a specific user
+   * Returns{ id, useranme, wishlist_category, description, title, banner_img, items:[] }
+   **/
+static async getWishlistByTitle(username, wishlistCategory, wishlistTitle) {
+  // const existCheck = await userExistCheck();
+  // if (!existCheck) throw new NotFoundError(`${username} doesn't exist!`);
+  const wishlistCategoryFound = await wishlistCategoryCheck(wishlistCategory);
+  if (!wishlistCategoryFound) throw new NotFoundError(`${wishlistCategory} doesn't exist!`);
+
+  const result = await db.query(
+        `SELECT w.id, w.username, c.category, c.color_code, w.description, w.title, w.banner_img
+         FROM user_wishlists w
+         INNER JOIN wishlist_categories c ON w.category_id = c.id
+         WHERE w.username = $1 AND w.category_id = $2 AND w.title = $3`,
+         [username, wishlistCategoryFound.id, wishlistTitle]
   );
 
-  userWishlsit.items = itemRes.rows;
+  const userWishlist = result.rows[0];
+  if (!userWishlist) throw new NotFoundError(`${wishlistTitle} doesn't exist for ${username} in the ${wishlistCategory} category`);
+  
+  const itemRes = await db.query(
+    `SELECT uwi.item_id, i.name, c.category, c.color_code, i.description, i.link, i.image_link, i.price
+    FROM user_wishlist_items uwi
+    INNER JOIN items i ON uwi.item_id = i.id
+    INNER JOIN item_categories c ON i.category_id = c.id
+    WHERE uwi.wishlist_id = $1
+    ORDER BY i.name`,
+    [userWishlist.id],
+  );
+
+  userWishlist.items = itemRes.rows;
 
   return userWishlist;
 }
-
 
 
 /** Deactivate a wishlist of a user by username
@@ -306,7 +317,7 @@ static async removeWishlist(username, wishlistCategory) {
   );
 
   const wishlist = result.rows[0]
-  if (!wishlist) throw new NotFoundError(`The ${wishlistCategory} wishlist doesn't exists for ${username}`);
+  if (!wishlist) throw new NotFoundError(`The ${wishlistCategory} wishlist doesn't exist for ${username}`);
   return `${wishlistCategory} wishlist for ${username} has been deleted!`;
 }
 
@@ -316,25 +327,35 @@ static async removeWishlist(username, wishlistCategory) {
    * Returns { username, firstName, lastName, profilePic, isAdmin }
    * Throws NotFoundError if not found.
    */
-   static async addItemToWishlist(username, wishlistCategory, data) {
-
-    const itemFound = await itemExistCheck(data.itemName);
-
-    const result = await db.query(
-      `INSERT INTO user_items
-      (item_id, username, must_have)
-      VALUES ($1, $2, $3)
-      RETURNING id`, [itemFound.id, username, data.mustHave],
+   static async addItemToWishlist(wishlistData, itemData) {
+    const itemRes = await db.query(
+      `SELECT id 
+      FROM items
+      WHERE id = $1`, [itemData]
     );
 
-    const addedItem = result.rows[0];
-    
+    const item = itemRes.rows[0];
+    if(!item) throw new NotFoundError(`The ${itemData} doesn't exist!`);
+
     const wishlistRes = await db.query(
-      `INSERT INTO user_wishlist_items
-      (user_item_id, user_wishlists_id)
-      VALUES ($1, $2)
-      RETURNING `
+      `SELECT id, username, title
+      FROM user_wishlists
+      WHERE id = $1`,
+      [wishlistData.id]
     )
+
+    const wishlist = wishlistRes.rows[0];
+
+    const result = await db.query(
+      `INSERT INTO user_wishlist_items
+      (item_id, wishlist_id)
+      VALUES ($1, $2)
+      RETURNING item_id`, [item.id, wishlist.id]
+    )
+
+    const addedItem = result.rows[0];
+
+    return `added item ${addedItem}`;
   }
 
 }

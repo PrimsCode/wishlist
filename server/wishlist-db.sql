@@ -17,15 +17,11 @@ CREATE DATABASE wishlist_test;
 
 \i wishlist-schema.sql
 
-
 DROP TABLE users CASCADE;
 DROP TABLE items CASCADE;
 DROP TABLE wishlist_categories CASCADE;
 DROP TABLE item_categories CASCADE;
 DROP TABLE user_wishlists CASCADE;
-DROP TABLE status CASCADE;
-DROP TABLE user_items CASCADE;
+DROP TABLE user_wishlist_items CASCADE;
 DROP TABLE follow CASCADE;
-DROP TABLE user_wishlists_items  CASCADE;
-
 

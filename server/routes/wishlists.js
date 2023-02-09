@@ -60,7 +60,7 @@ const router = express.Router();
    **/
   router.get("/categories/:category", async function (req, res, next) {
     try {
-      const wishlists = await Wishlist.getAllWishlistOfCategory(req.params.category);
+      const wishlists = await Wishlist.getAllWishlistsOfCategory(req.params.category);
       return res.json({ wishlists });
     } catch (err) {
       return next(err);

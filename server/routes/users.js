@@ -29,7 +29,7 @@ const router = express.Router();
    * Returns { username, firstName, lastName, profilePic, isAdmin}
    * Authorization required: admin or same user as username
    **/
-  router.get("/:username", ensureCorrectUserOrAdmin, async function (req, res, next) {
+  router.get("/:username", ensureLoggedIn, async function (req, res, next) {
     try {
       const user = await User.get(req.params.username);
       return res.json({ user });
@@ -99,6 +99,8 @@ const router = express.Router();
       console.log(req.params.username);
       console.log(req.body.category);
       console.log(req.body.description);
+      console.log(req.body.title);
+      console.log(req.body.bannerImg)
       const wishlist = await User.createWishlist(req.params.username, req.body);
       return res.json({ wishlist});
     } catch (err) {
@@ -113,13 +115,22 @@ const router = express.Router();
        **/
        router.get("/:username/wishlists/:category", ensureLoggedIn, async function (req, res, next) {
         try {
-          const wishlist = await User.getWishlistByCategory(req.params.username, req.params.category);
+          const wishlist = await User.getWishlistsByCategory(req.params.username, req.params.category);
           return res.json({ wishlist });
         } catch (err) {
           return next(err);
         }
       });
   
+
+      router.get("/:username/wishlists/:category/:title", ensureLoggedIn, async function (req, res, next) {
+        try {
+          const wishlist = await User.getWishlistByTitle(req.params.username, req.params.category, req.params.title);
+          return res.json({ wishlist });
+        } catch (err) {
+          return next(err);
+        }
+      });
   // /** PATCH user by username
   //  * Data can include: { firstName, lastName, password, profilePic}
   //  * Returns { username, firstName, lastName, profilePic, isAdmin }
@@ -140,18 +151,27 @@ const router = express.Router();
   // });
 
 
-  router.patch("/:username/wishlists/:category", ensureCorrectUserOrAdmin, async function (req, res, next) {
+  // router.patch("/:username/wishlists/:category", ensureCorrectUserOrAdmin, async function (req, res, next) {
+  //   try {
+  //     const validator = jsonschema.validate(req.body, WishlistNewSchema);
+  //     if (!validator.valid) {
+  //       const errs = validator.errors.map(e => e.stack);
+  //       throw new BadRequestError(errs);
+  //     }
+  //     console.log(req.params.username);
+  //     console.log(req.body.category);
+  //     console.log(req.body.description);
+  //     const wishlist = await User.createWishlist(req.params.username, req.body);
+  //     return res.json({ wishlist});
+  //   } catch (err) {
+  //     return next(err);
+  //   }
+  // });
+
+  router.post("/:username/wishlists/:category/:title", ensureCorrectUserOrAdmin, async function (req, res, next) {
     try {
-      const validator = jsonschema.validate(req.body, WishlistNewSchema);
-      if (!validator.valid) {
-        const errs = validator.errors.map(e => e.stack);
-        throw new BadRequestError(errs);
-      }
-      console.log(req.params.username);
-      console.log(req.body.category);
-      console.log(req.body.description);
-      const wishlist = await User.createWishlist(req.params.username, req.body);
-      return res.json({ wishlist});
+      const addedItem = await User.addItemToWishlist(req.body.wishlist, req.body.item);
+      return res.json({ addedItem});
     } catch (err) {
       return next(err);
     }

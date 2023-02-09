@@ -43,19 +43,32 @@ const router = express.Router();
       return next(err);
     }
   });
+
   
-  
-  /** GET item by id
+    /** GET all item categories
    * Returns { id, name, price, description, link, imageLink, category}
    **/
-  router.get("/:id", async function (req, res, next) {
-    try {
-      const item = await Item.get(req.params.id);
-      return res.json({ item });
-    } catch (err) {
-      return next(err);
-    }
-  });
+     router.get("/categories", async function (req, res, next) {
+      try {
+        const categories = await Item.getAllCategories();
+        return res.json({ categories });
+      } catch (err) {
+        return next(err);
+      }
+    });
+  
+    
+    /** GET item by id
+     * Returns { id, name, price, description, link, imageLink, category}
+     **/
+    router.get("/:id", async function (req, res, next) {
+      try {
+        const item = await Item.get(req.params.id);
+        return res.json({ item });
+      } catch (err) {
+        return next(err);
+      }
+    });
 
 
   /** PATCH item by id
@@ -90,6 +103,8 @@ const router = express.Router();
       return next(err);
     }
   });
+
+
 
 
   

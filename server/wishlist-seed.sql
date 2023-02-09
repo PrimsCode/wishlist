@@ -11,44 +11,44 @@ VALUES ('testadmin', '$2a$12$zzpDmfJDBARKgWaB8ivHreS0fSv6HZBO1rHFRqsziFIySf4b1NE
         ('eleven', '$2a$12$syH5UnIC4odkgWXmEepfKuImrcArosFvl2IpjKHi9VJFrqnm3F./u', 'Jane', 'Hopper', 'https://media.glamourmagazine.co.uk/photos/62a72fbf451fa6418456b4af/2:3/w_1280,h_1920,c_limit/STRANGER%20THINGS%20BEHIND%20THE%20SCENES%20130622%20deefault2StrangerThings_StrangerThings4_1_00_25_43_15.jpg', FALSE)
 ;
 
-INSERT INTO wishlist_categories (category) 
-VALUES ('birthday'),
-        ('back to school'),
-        ('baby'),
-        ('graduation'),
-        ('christmas'),
-        ('sweet 16'),
-        ('wedding'),
-        ('housewarming')
+INSERT INTO wishlist_categories (category, color_code) 
+VALUES ('birthday', 'lightsteelblue'),
+        ('back to school', 'gold'),
+        ('baby', 'navajowhite'),
+        ('graduation', 'lightslategrey'),
+        ('christmas', 'green'),
+        ('valentine', 'hotpink'),
+        ('wedding', 'lavender'),
+        ('housewarming', 'coral')
     ;
 
-INSERT INTO item_categories (category) 
-VALUES ('grocery'),
-        ('books'),
-        ('home'),
-        ('electronics'),
-        ('furniture'),
-        ('toys'),
-        ('clothing'),
-        ('shoes'),
-        ('accessories'),
-        ('pets'),
-        ('school supplies'),
-        ('kitchen'),
-        ('outdoor activities'),
-        ('video games'),
-        ('garden'),
-        ('health'),
-        ('party supplies'),
-        ('household essentials'),
-        ('baby'),
-        ('art and craft'),
-        ('personal care'),
-        ('beauty'),
-        ('sports'),
-        ('movies'),
-        ('music'),
-        ('holiday')
+INSERT INTO item_categories (category, color_code) 
+VALUES ('grocery', '#90EE90'),
+        ('books', '#CD853F'),
+        ('home', '#DEB887'),
+        ('electronics', '#C0C0C0'),
+        ('furniture', '#FA8072'),
+        ('toys', '#E0FFFF'),
+        ('clothing', '#FFE4E1'),
+        ('shoes', '#FFFACD'),
+        ('accessories', '#FFC0CB'),
+        ('pets', '#F8F8FF'),
+        ('school supplies', '#FFD700'),
+        ('kitchen', '#F4A460'),
+        ('outdoor activities', '#808000'),
+        ('video games', '#66CDAA'),
+        ('garden', '#8FBC8B'),
+        ('health', '#AFEEEE'),
+        ('party supplies', '#1E90FF'),
+        ('household essentials', '#FFA07A'),
+        ('baby', '#FFDAB9'),
+        ('art and craft', '#8B008B'),
+        ('personal care', '#DA70D6'),
+        ('beauty', '#D8BFD8'),
+        ('sports', '#F0FFF0'),
+        ('movies', '#5F9EA0'),
+        ('music', '#F0F8FF'),
+        ('holiday', '#FF8C00')
     ;
 
 INSERT INTO items (name, price, description, category_id, link, image_link)
@@ -78,39 +78,32 @@ VALUES ('Eggo Homestyle Waffles', 2.85, 'Best frozen waffles in the world',
             'https://m.media-amazon.com/images/I/51QvmB-vcOL._SX300_SY300_QL70_FMwebp_.jpg')
         ;
 
-INSERT INTO user_wishlists (username, category_id, description)
-VALUES ('sheldoncopper', 5, 'What I want for Christmas'),
-        ('sheldoncopper', 1, 'What I want for my Birthday'),
-        ('sheldoncopper', 9, 'What I want for Valentines'),
-        ('testadmin', 5, 'What I want for Christmas'),
-        ('testuser', 1, 'What I want for my Birthday'),
-        ('testuser', 9, 'What I want for Valentines'),
-        ('testuser', 5, 'What I want for Christmas'),
-        ('eleven', 1, 'What I want for my Birthday')
+INSERT INTO user_wishlists (username, category_id, description, title)
+VALUES ('sheldoncopper', 5, 'What I want for Christmas', 'My Christmas Wishlist'),
+        ('sheldoncopper', 1, 'What I want for my Birthday', 'Best Bday')
     ;
 
-INSERT INTO user_items (item_id, username, must_have)
-VALUES (3, 'eleven', true),
-        (4, 'sheldoncopper', true),
-        (7, 'sheldoncopper', false),
-        (9, 'testeadmin', true),
-        (10, 'testadmin', false),
-        (5, 'testuser', true),
-        (6, 'testuser', false)
-;
+-- INSERT INTO user_items (item_id, username, must_have)
+-- VALUES (3, 'eleven', true),
+--         (4, 'sheldoncopper', true),
+--         (9, 'testeadmin', true),
+--         (10, 'testadmin', false),
+--         (5, 'testuser', true),
+--         (6, 'testuser', false)
+-- ;
 
-INSERT INTO user_wishlists_items (user_items_id, user_wishlists_id)
-VALUES (10, 2),
-        (10, 3),
-        (10, 7),
-        (11, 3),
-        (11, 7),
-        (1, 11),
-        (12, 8),
-        (12, 9),
-        (13, 10),
-        (13, 8),
-        (8, 4),
-        (8, 5),
-        (9, 5)
-;
+-- INSERT INTO user_wishlists_items (user_items_id, user_wishlists_id)
+-- VALUES (10, 2),
+--         (10, 3),
+--         (10, 7),
+--         (11, 3),
+--         (11, 7),
+--         (1, 11),
+--         (12, 8),
+--         (12, 9),
+--         (13, 10),
+--         (13, 8),
+--         (8, 4),
+--         (8, 5),
+--         (9, 5)
+-- ;
