@@ -13,6 +13,18 @@ const theme = createTheme({
         customGrey:
         {
             main: "#E0E0E0"
+        },
+        birthday:
+        {
+            main: "#CCE5EB"
+        },
+        christmas:
+        {
+            main: "#F57E7E"
+        },
+        valentines:
+        {
+            main: "#CF6DDE"
         }
         // customBlue:
         // {
@@ -23,7 +35,7 @@ const theme = createTheme({
         fontFamily: "'Rubik', 'Roboto', sans-serif",
         h6: {
             fontFamily: "'Rubik', 'Roboto', sans-serif",
-            fontWeight: 400
+            fontWeight: 300
         },
         body1: {
             fontFamily: "'Roboto', sans-serif"

@@ -67,9 +67,9 @@ const NavBar = ({setToken, setUser}) => {
                 onClose={() => setAnchorEl(null)}
               >
                 <MenuItem onClick={() => handleMenuClick('/')}>Home</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('/profile')}>Profile</MenuItem>
-                <MenuItem onClick={handleMenuClick}>Wishlists</MenuItem>
-                <MenuItem onClick={handleMenuClick}>Items</MenuItem>
+                <MenuItem onClick={() => handleMenuClick(`/profile/${user.username}`)}>Profile</MenuItem>
+                <MenuItem onClick={() => handleMenuClick('/wishlists')}>Wishlists</MenuItem>
+                <MenuItem onClick={() => handleMenuClick('/items')}>Items</MenuItem>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
               :

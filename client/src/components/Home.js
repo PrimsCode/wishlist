@@ -10,10 +10,10 @@ const Home = () => {
     const navigate = useNavigate();
 
     const handleClick = () => {
-        if (user === null || user.length === 0) {
-            navigate('/register');
-        }
-        navigate('/profile');
+        if (user !== null) {
+            navigate(`/profile/${user.username}`)
+        };
+        navigate('/register');
       };
 
     return (

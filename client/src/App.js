@@ -13,7 +13,10 @@ import Home from './components/Home'
 import AuthForm from './components/AuthForm';
 import Loading from './components/Loading';
 import UserProfile from './components/UserProfile';
-import ItemList from './components/ItemList';
+import ItemPage from './components/ItemPage';
+import Wishlist from './components/Wishlist';
+import WishlistPage from './components/WishlistPage';
+import Item from './components/Item'
 
 export const TOKEN_STORAGE_ID = "wishlist-token";
 
@@ -66,8 +69,6 @@ function App() {
       return false;
     }
   }
-
-  
   
   //show loading symbol while information is loading
   if(isLoading) return <Loading />
@@ -81,9 +82,11 @@ function App() {
             <Route path="/" element={<Home  />} />
             <Route path="/register" element={<AuthForm userFunction={register} formType="register" />} />
             <Route path="/login" element={<AuthForm userFunction={login} formType="login" />} />
-            <Route path="/profile" element={<UserProfile />} />
-            <Route path="/items" element={<ItemList />} />
-
+            <Route path="/profile/:username" element={<UserProfile />} />
+            <Route path="/items" element={<ItemPage />} />
+            <Route path="/wishlists" element={<WishlistPage />} />
+            <Route path="/wishlists/:username/:wishlistCategory/:wishlistTitle" element={<Wishlist />} />
+            <Route path="/items/:itemId" element={<Item />} />
           </Routes>
         </UserContext.Provider>
     </BrowserRouter>

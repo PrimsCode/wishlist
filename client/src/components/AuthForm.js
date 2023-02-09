@@ -1,7 +1,8 @@
-import React, { useState, useContext} from 'react';
+import React, { useState, useContext, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import {Grid, Typography, FormControl, TextField, Button, Paper, Alert} from '@mui/material';
 import UserContext from '../helpers/UserContext';
+import Loading from './Loading';
 
 const AuthForm = ({userFunction, formType}) => {
     const {user} = useContext(UserContext);
@@ -15,26 +16,49 @@ const AuthForm = ({userFunction, formType}) => {
         alignItems: "center",
       };
 
-    const initialState = {
+    const [formData, setFormData] = useState({});
+    const [form, setForm] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const loginDataState = {
         username:"",
         password:""
-    }
-    const setForm = [
+    };
+
+    const loginStateForm = [
         {type:"text", name:"username", label:"Username"},
         {type:"password", name:"password", label:"Password"}
-    ]
+    ];
 
-    if (formType === "register") {
-        initialState.firstName ="";
-        initialState.lastName ="";
-        initialState.profilePic ="";
-        setForm.push(
+    const registerDataState ={
+        username:"",
+        password:"",
+        firstName:"",
+        lastName:"",
+        profilePic:""
+    };
+
+    const registerStateForm = [
+        {type:"text", name:"username", label:"Username"},
+        {type:"password", name:"password", label:"Password"},
         {type:"text", name:"firstName", label:"First Name"},
         {type:"text", name:"lastName", label:"Last Name"},
-        {type:"text", name:"profilePic", label:"Profile Picture Link"})
-    }
+        {type:"text", name:"profilePic", label:"Profile Picture Link"}
+    ];
 
-    const [formData, setFormData] = useState(initialState);
+    useEffect(() => {
+        if (formType === "register") {
+            setForm(registerStateForm);
+            setFormData(registerDataState);
+            setIsLoading(true);
+        } else {
+            setFormData(loginDataState);
+            setForm(loginStateForm);
+            setIsLoading(true);
+        }
+    },[formType]);
+    
+
     const [error, setError] = useState({
         state: false,
         message: ""
@@ -43,7 +67,7 @@ const AuthForm = ({userFunction, formType}) => {
     const navigate = useNavigate();
     
     if(user !== null && Object.keys(user).length > 0){
-        navigate('/profile');
+        navigate(`/profile/${user.username}`);
     }
 
     //handle form change, submit, and validate if all data are inputted
@@ -61,7 +85,6 @@ const AuthForm = ({userFunction, formType}) => {
         if (handleValidation() === true){
             const saveUser = await userFunction(formData);
             if(!saveUser) handleError("Failed! Please try again!");
-            setFormData(initialState);
         }
     }
 
@@ -82,6 +105,8 @@ const AuthForm = ({userFunction, formType}) => {
         }, 5000);
     }
 
+    if(!isLoading) return <Loading />;
+
     //form to create a new user
     return (
         <Grid container style={centering}>
@@ -93,12 +118,19 @@ const AuthForm = ({userFunction, formType}) => {
             <Paper style={container}>
 
             {formType === 'register' ? 
-                <Typography variant="h4" style={{marginBottom:'10px'}}>Register</Typography>
+                <div>
+                    <Typography variant="h4" style={{marginBottom:'10px'}}>Register</Typography>
+                    <Typography variant="body1">Already registered? Go to <a href="/login">Login</a></Typography>
+                </div>
+                
                 :
-                <Typography variant="h4" style={{marginBottom:'10px'}}>Login</Typography>
+                <div>
+                    <Typography variant="h4" style={{marginBottom:'10px'}}>Login</Typography>
+                    <Typography variant="body1">Haven't registered? Go to <a href="/register">Register</a></Typography>
+                </div>
             }
             
-            {setForm.map((data) => (
+            {form.map((data) => (
                  <FormControl sx={formStyle}>
                     <TextField
                         type={data.type}

@@ -1,39 +1,57 @@
 import React, { useState } from 'react';
 import {Grid, IconButton, TextField} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import CloseIcon from '@mui/icons-material/Close';
 
-const SearchBar = ({type, search}) => {
+
+const SearchBar = ({type, setSearchData, data}) => {
     const centering = {display: "flex", justifyContent: "center", alignItems:"center", margin:"20px"};
-    const searchBox = {width: '55vw'};
+    const [temp, setTemp] = useState([]);
 
-    const [searchQuery, setSearchQuery] = useState("");
-
-    const handleChange = (e) => {
+    const handleFilter = (e) => {
         const searchQuery = e.target.value.toLowerCase();
-        setSearchQuery(searchQuery);
-    };
+        const newFilter = data.filter((data) => {
+            if(type){
+                return data.name.toLowerCase().includes(searchQuery);
+            } else {
+                return data.title.toLowerCase().includes(searchQuery);
+            }
+        })
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        search(searchQuery);
+        if (searchQuery === "") {
+            setSearchData(data);
+            setTemp([]);
+        } else {
+            setSearchData(newFilter);
+            setTemp(newFilter);
+        }
+    }
+
+    const handleClearInput = (e) => {
+        setTemp([]);
+        setSearchData(data);
     }
 
     return (
+
         <Grid container style={centering}>
-            <form onSubmit={handleSubmit}>
-                <TextField 
-                    id="search-bar" 
-                    name="text" 
-                    label={`Enter a ${type}`}
-                    placeholder="Search..."
-                    variant='outlined'
-                    style={searchBox}
-                    onChange={handleChange}
-                />
+            <Grid item>
+                <TextField
+                    id="search-bar"
+                    className="search__input"
+                    onChange={handleFilter}
+                    label="Enter your search"
+                    variant="outlined"
+                    sx={{ m: 1, minWidth: 500 }}
+                    />
                 <IconButton type="submit" aria-label='search'>
-                    <SearchIcon fontSize="large" color="primary" />
+                    {temp.length === 0 ?
+                        <SearchIcon fontSize="large" color="primary" />
+                    :
+                        <CloseIcon fontSize="large" color="primary" onClick={handleClearInput} />
+                    }
                 </IconButton>
-            </form>
+            </Grid>
         </Grid>
     )
 }

@@ -78,9 +78,21 @@ class WishlistApi {
   }
 
   //get all wishlist categories in the database
-  static async getUserWishlistByCategory(username, category) {
+  static async getUserWishlistsByCategory(username, category) {
     let res = await this.request(`users/${username}/wishlists/${category}`);
     return res.wishlist;
+  }
+
+  //get all wishlist categories in the database
+  static async getUserWishlistByTitle(username, category, title) {
+    let res = await this.request(`users/${username}/wishlists/${category}/${title}`);
+    return res.wishlist;
+  }
+
+  //get all wishlist categories in the database
+  static async addItemToUserWishlist(username, category, title, data) {
+    let res = await this.request(`users/${username}/wishlists/${category}/${title}`, data, "post");
+    return res;
   }
 
   /**ITEMS API *****************************************************/
@@ -98,8 +110,8 @@ class WishlistApi {
   }
 
   //get an item in the database
-  static async getItem(id, name) {
-    let res = await this.request(`items/${id}`, {name});
+  static async getItem(id) {
+    let res = await this.request(`items/${id}`);
     return res.item;
   }
 
@@ -107,6 +119,12 @@ class WishlistApi {
   static async updateItem(id, data) {
     let res = await this.request(`items/${id}`, data, "patch");
     return res.item;
+  }
+
+  //get all items categories
+  static async getItemCategories() {
+    let res = await this.request(`items/categories`);
+    return res.categories;
   }
 
 }

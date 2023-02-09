@@ -1,43 +1,34 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {Grid, Typography, Button, Card, CardHeader, CardMedia, CardContent} from '@mui/material';
-import WishlistApi from '../helpers/WishlistAPI';
-import UserContext from '../helpers/UserContext';
-import Loading from './Loading';
-import SearchBar from './SearchBar';
+import React from 'react';
+import {Grid, Typography} from '@mui/material';
 import ItemCard from './ItemCard';
+import ItemCardHorizontal from './ItemCardHorizontal';
 
-const ItemList = () => {
-    const centering = {display: "flex", justifyContent: "center", alignItems:"center"};
-    const mainGrid = {border:"solid", minWidth:"100%", height:"100vh", display: "flex", justifyContent: "center", alignItems:"center"};
-    const [items, setItems] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
-
-    useEffect(()=> {
-        setIsLoading(false);
-        searchItems();
-    }, []);
-
-    const searchItems = async(searchQuery) => {
-        let items = await WishlistApi.getItems(searchQuery);
-        setItems(items);
-        setIsLoading(true);
-    }
-
-    if(!isLoading) return <Loading />
+const ItemList = ({items, type, handleAdd}) => {
 
     return (
-        <Grid container style={centering}>
-            <SearchBar type="items" search={searchItems} />
-            {items.length ?
-                <div>
-                    {items.map((item) => (
-                        <ItemCard item={item} />
-                    ))}
-                </div>
-            :
-            <Typography variant="h5" >No Item Found!</Typography>}
+        <>
+        {items.length ?
+            <>
+            {items.map(item => (
+                <>
+                
+                {type == "vertical" ? 
+                    <Grid item xs={12} sm={6} md={4} lg={3}> 
+                        <ItemCard item={item} /> 
+                    </Grid>
+                :
+                    <Grid item sx={{display:"block"}} > 
+                        <ItemCardHorizontal item={item} handleAdd={handleAdd} /> 
+                    </Grid>
+                }
 
-        </Grid>
+                </>
+            ))}
+            </>
+            :
+            <Typography variant="h5" sx={{margin:"30px"}} >No item found.</Typography>
+            }
+        </>
     )
 }
 
