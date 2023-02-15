@@ -2,7 +2,7 @@ import axios from "axios";
 const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3001";
 
 class WishlistApi {
-    
+
   // token storage for activating API
   static token;
   static async request(endpoint, data = {}, method = "get") {
@@ -11,8 +11,8 @@ class WishlistApi {
     const url = `${BASE_URL}/${endpoint}`;
     const headers = { Authorization: `Bearer ${WishlistApi.token}` };
     const params = (method === "get")
-        ? data
-        : {};
+      ? data
+      : {};
     try {
       return (await axios({ url, method, data, params, headers })).data;
     } catch (err) {
@@ -59,6 +59,12 @@ class WishlistApi {
     return res.wishlists;
   }
 
+    //get all wishlists in the database
+    // static async getAllWishlistsFilter(query) {
+    //   let res = await this.request(`wishlists/${query}`);
+    //   return res.wishlists;
+    // }
+
   //get all wishlist categories in the database
   static async getAllWishlistCategories() {
     let res = await this.request(`wishlists/categories`);
@@ -90,10 +96,23 @@ class WishlistApi {
   }
 
   //get all wishlist categories in the database
-  static async addItemToUserWishlist(username, category, title, data) {
-    let res = await this.request(`users/${username}/wishlists/${category}/${title}`, data, "post");
+  static async addItemToUserWishlist(username, category, title, itemId, data) {
+    let res = await this.request(`users/${username}/wishlists/${category}/${title}/${itemId}`, data, "post");
     return res;
   }
+
+  //delete a wishlist
+  static async deleteWishlist(username, category, title, data) {
+    let res = await this.request(`users/${username}/wishlists/${category}/${title}`, data, "delete");
+    return res;
+  }
+
+    //delete an item from a wishlist
+    static async deleteItemFromWishlist(username, wishlistCategory, wishlistTitle, itemId, data){
+      let res = await this.request(`users/${username}/wishlists/${wishlistCategory}/${wishlistTitle}/${itemId}`, data, "delete");
+      return res;
+  
+    }
 
   /**ITEMS API *****************************************************/
 
@@ -121,11 +140,19 @@ class WishlistApi {
     return res.item;
   }
 
-  //get all items categories
+  //get all categories
   static async getItemCategories() {
     let res = await this.request(`items/categories`);
     return res.categories;
   }
+
+  //get all items in a category
+  static async getAllItemsCategory(category) {
+    let res = await this.request(`items/categories/${category}`);
+    return res;
+  }
+
+
 
 }
 

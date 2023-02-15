@@ -13,7 +13,7 @@ class Item {
   /**Get all items.
    * Returns [{id, name, price, description, category, link, imageLink}, ...]
    **/
-   static async getAll({name} = {}) {
+   static async getAll({name, category, orderBy} = {}) {
     let query = 
           `SELECT i.id,
                   i.name,
@@ -24,23 +24,34 @@ class Item {
                   c.category,
                   c.color_code
            FROM items i
-           INNER JOIN item_categories c ON c.id = i.category_id 
-           ORDER BY i.name`;
+           INNER JOIN item_categories c ON c.id = i.category_id`;
     let queryValues = [];
     let whereExpressions = [];
+    let order = " ORDER BY "
+    let type = "i.name"
 
-    if (name !== undefined) {
+    if (name) {
       queryValues.push(`%${name}%`);
       whereExpressions.push(`i.name ILIKE $${queryValues.length}`);
+    }
+
+    if(category) {
+      queryValues.push(category);
+      whereExpressions.push(`c.category = $${queryValues.length}`)
     }
 
     if (whereExpressions.length > 0) {
       query += " WHERE " + whereExpressions.join(" AND ");
     }
 
+    if(orderBy === "priceLower") type = "i.price ASC"
+    if(orderBy === "priceHigher") type = "i.price DESC"
+    
+    order += type;
+    query += order;
+
     // query += " ORDER BY i.name";
     const itemsRes = await  db.query(query, queryValues);
-
     return itemsRes.rows;
   }
 
@@ -68,12 +79,14 @@ class Item {
     if (!item) throw new NotFoundError(`${name} doesn't exist!`);
 
     const wishlistRes = await db.query(
-      `SELECT uwi.wishlist_id, w.title, w.username, c.category, w.description, w.banner_img
-      FROM user_wishlist_items uwi
+      `SELECT i.id AS item_id, uwi.wishlist_id, w.title, u.username, u.profile_pic, c.category, c.color_code, w.description, w.banner_img
+      FROM items i
+      INNER JOIN user_wishlist_items uwi ON uwi.item_id = i.id
       INNER JOIN user_wishlists w ON uwi.wishlist_id = w.id
+      INNER JOIN users u ON u.username = w.username
       INNER JOIN wishlist_categories c ON w.category_id = c.id
-      WHERE uwi.item_id = $1
-      ORDER BY i.name`,
+      WHERE i.id = $1
+      ORDER BY w.title`,
       [id],
     );
 
@@ -177,7 +190,7 @@ class Item {
  **/
    static async createNewCategory(category,colorCode) {
     const categoryCheck = await itemCategoryCheck(category);
-    if (categoryCheck) throw new BadRequestError(`${category} arleady exists!`);
+    if (categoryCheck) throw new BadRequestError(`${category} already exists!`);
     
     const lowerCaseCategory = category.toLowerCase();
 
@@ -196,20 +209,23 @@ class Item {
  * Throws NotFoundError if category does not exist
  **/
      static async getAllItemsOfCategory(category) {
-      const categoryCheck = await itemCategoryCheck(category);
-      if (!categoryCheck) throw new NotFoundError(`${category} does not exist!`);
+      const foundCat = await itemCategoryCheck(category);
+      if (!foundCat) throw new NotFoundError(`${category} does not exist!`);
 
-      const lowerCaseCategory = category.toLowerCase();
+      // const lowerCaseCategory = category.toLowerCase();
 
-      const result = await db.query(
-            `SELECT i.id, i.username, c.category, i.description, c.color_code
+      const res = await db.query(
+            `SELECT i.id, c.category, c.color_code, i.name, i.price, i.description, i.link, i.image_link
              FROM items i
              INNER JOIN item_categories c ON c.id = i.category_id
-             WHERE c.category = $1
-             ORDER BY category`, 
-             [lowerCaseCategory]
+             WHERE c.id = $1`,
+             [foundCat.id]
       );
-      return result.rows;
+
+      const items = res.rows;
+      if (!items) throw new NotFoundError(`${category} doesn't have any item.`)
+  
+      return items;
     }
 
     /**DELETE an item category

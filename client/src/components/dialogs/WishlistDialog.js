@@ -1,18 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Dialog, DialogTitle, FormControl, TextField, Select, InputLabel, MenuItem} from '@mui/material';
-
-import WishlistApi from '../helpers/WishlistAPI';
-import Loading from './Loading';
+import WishlistApi from '../../helpers/WishlistAPI';
+import Loading from '../Loading';
 
 const WishlistDialog = (props) => {
-    // const initialState = {
-    //     username:user.username,
-    //     category:"",
-    //     description:""
-    // }
-
-    const [isLoading, setIsLoading] = useState(false);
-
 
     const {onClose, createNewWishlist, open, user} = props;
     const [formData, setFormData] = useState({
@@ -23,12 +14,10 @@ const WishlistDialog = (props) => {
         bannerImg:""
     });
     const [categories, setCategories] = useState([]);
-    const [error, setError] = useState({
-        state: false,
-        message: ""
-    });
-
-    const formStyle = { m: 1, width: 300, alignItems: "center" };
+    // const [error, setError] = useState({
+    //     state: false,
+    //     message: ""
+    // });
 
     useEffect(() => {
         const getCategories = async() => {
@@ -42,8 +31,6 @@ const WishlistDialog = (props) => {
     console.log(props)
 
     if(!user.username) return <Loading />
-
-    // if(!isLoading) return <Loading />
 
      //handle form change, submit, and validate if all data are inputted
      const handleChange = (e) => {
@@ -65,21 +52,21 @@ const WishlistDialog = (props) => {
     }
 
     const handleValidation = () => {
-        for (let key in formData){
-            if (formData[key].length === 0){
-                alert(`${key} was not filled!`)
+            if (formData.category.length === 0 ||
+                formData.title.length === 0 ||
+                formData.description.length === 0){
+                alert("Please fill in all required fields!")
                 return false;
             }
-        }
         return true;
     }
 
-    const handleError = (msg) => {
-        setError({state:true, message: msg});
-        setTimeout(() => {
-            setError({state:false, message: ""});
-        }, 5000);
-    }
+    // const handleError = (msg) => {
+    //     setError({state:true, message: msg});
+    //     setTimeout(() => {
+    //         setError({state:false, message: ""});
+    //     }, 5000);
+    // }
 
     return (
         <Dialog onClose={onClose} open={open}>
@@ -124,7 +111,7 @@ const WishlistDialog = (props) => {
                         type="text"
                         id="bannerImg"
                         name="bannerImg"
-                        label="Wishlist Banner Image"
+                        label="Wishlist Banner Image (Optional)"
                         value={formData.bannerImg}
                         onChange={handleChange} />
                 </FormControl>

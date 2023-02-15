@@ -37,6 +37,7 @@ const router = express.Router();
  router.get("/", async function (req, res, next) {
     try {
       const q = req.query;
+      console.log(q)
       const items = await Item.getAll(q);
       return res.json({ items });
     } catch (err) {
@@ -103,6 +104,19 @@ const router = express.Router();
       return next(err);
     }
   });
+
+
+  /** GET all item categories
+   * Returns { id, name, price, description, link, imageLink, category}
+   **/
+    router.get("/categories/:category", async function (req, res, next) {
+        try {
+          const items = await Item.getAllItemsOfCategory(req.params.category)
+          return res.json({ items });
+        } catch (err) {
+          return next(err);
+        }
+      });
 
 
 

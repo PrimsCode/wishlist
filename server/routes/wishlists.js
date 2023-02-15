@@ -16,7 +16,8 @@ const router = express.Router();
    **/
  router.get("/", async function (req, res, next) {
     try {
-      const wishlists = await Wishlist.getAll();
+      const q = req.query;
+      const wishlists = await Wishlist.getAll(q);
       return res.json({ wishlists });
     } catch (err) {
       return next(err);

@@ -12,15 +12,39 @@ class Wishlist {
     /**Get all active wishlists
    * Returns [{id, username, wishlist_category, description}, ...]
    **/
-     static async getAll() {
-      const result = await db.query(
-            `SELECT w.id, w.username, u.profile_pic, c.category, c.color_code, w.title, w.description, w.banner_img
+     static async getAll({title, category, orderBy}) {
+
+      let query = `SELECT w.id, w.username, u.profile_pic, c.category, c.color_code, w.title, w.description, w.banner_img
              FROM user_wishlists w
              INNER JOIN users u ON w.username = u.username
-             INNER JOIN wishlist_categories c ON w.category_id = c.id
-             ORDER BY c.category`
-      );
-      return result.rows;
+             INNER JOIN wishlist_categories c ON w.category_id = c.id`;
+
+      let queryValues = [];
+      let whereExpressions = [];
+      let order = " ORDER BY "
+      let type = "w.title"
+  
+      if (title) {
+        queryValues.push(`%${title}%`);
+        whereExpressions.push(`w.title ILIKE $${queryValues.length}`);
+      }
+  
+      if(category) {
+        queryValues.push(category);
+        whereExpressions.push(`c.category = $${queryValues.length}`)
+      }
+  
+      if (whereExpressions.length > 0) {
+        query += " WHERE " + whereExpressions.join(" AND ");
+      }
+  
+      if(orderBy === "username") type = "w.username"
+      
+      order += type;
+      query += order;
+  
+      const wishlistsRes = await  db.query(query, queryValues);
+      return wishlistsRes.rows;
     }
   
     /**Get all wishlist cateogies

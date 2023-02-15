@@ -168,9 +168,9 @@ const router = express.Router();
   //   }
   // });
 
-  router.post("/:username/wishlists/:category/:title", ensureCorrectUserOrAdmin, async function (req, res, next) {
+  router.post("/:username/wishlists/:category/:title/:itemId", ensureCorrectUserOrAdmin, async function (req, res, next) {
     try {
-      const addedItem = await User.addItemToWishlist(req.body.wishlist, req.body.item);
+      const addedItem = await User.addItemToWishlist(req.params.username, req.params.category, req.params.title, req.params.itemId);
       return res.json({ addedItem});
     } catch (err) {
       return next(err);
@@ -180,17 +180,29 @@ const router = express.Router();
 
   
   
-  /** DELETE user by username
+  /** DELETE a specific wishlist of a user
    * Authorization required: admin or same user as username
    **/
-  router.delete("/:username/wishlists/:category", ensureCorrectUserOrAdmin, async function (req, res, next) {
+  router.delete("/:username/wishlists/:category/:title", ensureCorrectUserOrAdmin, async function (req, res, next) {
     try {
-      await User.removeWishlist(req.params.username, req.params.category);
-      return res.json({ deleted: `${req.params.username}'s wishlist of ${req.params.category}` });
+      await User.removeWishlist(req.params.username, req.params.category, req.params.title);
+      return res.json({ deleted: `${req.params.username}'s wishlist title ${req.params.title}` });
     } catch (err) {
       return next(err);
     }
   });
+
+    /** DELETE an item in a specific wishlist
+   * Authorization required: admin or same user as username
+   **/
+    router.delete("/:username/wishlists/:category/:title/:itemId", ensureCorrectUserOrAdmin, async function (req, res, next) {
+      try {
+        await User.removeItemFromWishlist(req.params.username, req.params.category, req.params.title, req.params.itemId);
+        return res.json({ deleted: `${req.params.itemId} from the wishlist ${req.params.title}` });
+      } catch (err) {
+        return next(err);
+      }
+    });
 
 
 

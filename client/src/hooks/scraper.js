@@ -1,43 +1,43 @@
 // const puppeteer = require('puppeteer')
 
-const axios = require("axios");
-const {JSDOM} = require("jsdom").jsdom
+// const axios = require("axios");
+// const {JSDOM} = require("jsdom")
 
-async function scrapeItem(url) {
+// async function scrapeItem(url) {
 
-    //get html
-    const {data: html} = await axios.get(url);
-    const dom = new JSDOM(html);
-    const $ = (selector) => dom.window.document.querySelector(selector);
+//     //get html
+//     const {data: html} = await axios.get(url);
+//     const dom = new JSDOM(html);
+//     const $ = (selector) => dom.window.document.querySelector(selector);
 
-    let item = {
-        name:"",
-        link:url,
-        imageLink:"",
-        price:"",
-        description:""
-    }
+//     let item = {
+//         name:"",
+//         link:url,
+//         imageLink:"",
+//         price:"",
+//         description:""
+//     }
 
-    item.imageLink = $('#landingImage').src;
+//     item.imageLink = $('#landingImage').src;
 
-    //price setup
-    const price = $('.a-offscreen').textContent;
-    item.price = parseFloat(price.replace('$', ''));
+//     //price setup
+//     const price = $('.a-offscreen').textContent;
+//     item.price = parseFloat(price.replace('$', ''));
 
-    //title setup
-    const name = $('#productTitle').textContent;
-    item.name = name.trim();
+//     //title setup
+//     const name = $('#productTitle').textContent;
+//     item.name = name.trim();
 
-    //description setup
-    const description = $('#productDescription>p').textContent;
-    item.description = description.trim();
+//     //description setup
+//     const description = $('#productDescription>p').textContent;
+//     item.description = description.trim();
 
-    console.log(item);
+//     console.log(item);
     
-    return item;
-}
+//     return item;
+// }
 
-export default scrapeItem;
+// export default scrapeItem;
 
 // scrapeItem('https://www.amazon.com/HonestBaby-Toddler-Organic-Cotton-Pajamas/dp/B09582717C/pd_ci_mcx_mh_mcx_views_0?pd_rd_w=TQIjZ&content-id=amzn1.sym.1bcf206d-941a-4dd9-9560-bdaa3c824953&pf_rd_p=1bcf206d-941a-4dd9-9560-bdaa3c824953&pf_rd_r=ZSSMKXDCJ7K2KFHRYWEA&pd_rd_wg=IOCCS&pd_rd_r=b80b1600-c864-4a36-898e-4ce2dc158efa&pd_rd_i=B09582717C');
 

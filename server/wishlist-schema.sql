@@ -17,7 +17,7 @@ CREATE TABLE items (
   id SERIAL PRIMARY KEY,
   name TEXT UNIQUE NOT NULL,
   price DECIMAL NOT NULL,
-  description VARCHAR(300),
+  description VARCHAR(500),
   category_id INTEGER NOT NULL
     REFERENCES item_categories ON DELETE CASCADE,
   link TEXT UNIQUE NOT NULL,
@@ -36,7 +36,7 @@ CREATE TABLE user_wishlists (
         REFERENCES users ON DELETE CASCADE,
     category_id INTEGER NOT NULL
         REFERENCES wishlist_categories ON DELETE CASCADE,
-    description VARCHAR(300),
+    description VARCHAR(500),
     title VARCHAR(300) NOT NULL,
     banner_img VARCHAR
 );

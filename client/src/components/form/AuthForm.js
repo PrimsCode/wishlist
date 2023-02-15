@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import {Grid, Typography, FormControl, TextField, Button, Paper, Alert} from '@mui/material';
-import UserContext from '../helpers/UserContext';
-import Loading from './Loading';
+import UserContext from '../../helpers/UserContext';
+import Loading from '../Loading';
 
 const AuthForm = ({userFunction, formType}) => {
     const {user} = useContext(UserContext);

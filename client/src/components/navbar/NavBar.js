@@ -1,20 +1,18 @@
 import React, {useContext, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-import UserContext from '../helpers/UserContext';
-
-import {AppBar, Box, Toolbar, Typography, IconButton, MenuItem, Menu} from '@mui/material';
+import UserContext from '../../helpers/UserContext';
+//style
+import {AppBar, Toolbar, Typography, IconButton, 
+          MenuItem, Menu, Avatar} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import HomeIcon from '@mui/icons-material/Home';
-import ListAltIcon from '@mui/icons-material/ListAlt';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import AddIcon from '@mui/icons-material/Add';
-import SearchIcon from '@mui/icons-material/Search';
 
 const NavBar = ({setToken, setUser}) => {
-    const {user} = useContext(UserContext);
+  const {user} = useContext(UserContext);
+  //setting menu hover
   const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
 
+  //handlers
   const handleMenu = (e) => {
     setAnchorEl(e.currentTarget);
   };
@@ -32,15 +30,19 @@ const NavBar = ({setToken, setUser}) => {
 }
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1}} color="customLightGrey">
         <Toolbar>
+
+        {user !== null && Object.keys(user).length > 0 &&
             <IconButton onClick={() => handleMenuClick('/')}>
-                <HomeIcon style={{color: 'white'}}/>
+              <Avatar alt={user.username} src={user.profilePic} />
             </IconButton>
+          }
+
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} >
                 Wishlist
             </Typography>
+
             <div>
               <IconButton
                 size="large"
@@ -56,7 +58,6 @@ const NavBar = ({setToken, setUser}) => {
               </IconButton>
 
               {user !== null && Object.keys(user).length > 0 ? 
-
               <Menu
                 id="menu-appbar"
                 anchorEl={anchorEl}
@@ -66,10 +67,7 @@ const NavBar = ({setToken, setUser}) => {
                 open={Boolean(anchorEl)}
                 onClose={() => setAnchorEl(null)}
               >
-                <MenuItem onClick={() => handleMenuClick('/')}>Home</MenuItem>
-                <MenuItem onClick={() => handleMenuClick(`/profile/${user.username}`)}>Profile</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('/wishlists')}>Wishlists</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('/items')}>Items</MenuItem>
+                <MenuItem onClick={() => handleMenuClick(`/profile/${user.username}/edit`)}>Edit Profile</MenuItem>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
               :
@@ -89,7 +87,7 @@ const NavBar = ({setToken, setUser}) => {
             </div>
         </Toolbar>
       </AppBar>
-    </Box>
+
   );
 }
 
