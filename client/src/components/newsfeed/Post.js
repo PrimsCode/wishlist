@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const WishlistCard = ({ wishlist, user, getWishlists }) => {
+const Post = ({ wishlist, user, getWishlists }) => {
     const navigate = useNavigate();
 
     let firstLetter;
@@ -35,11 +35,6 @@ const WishlistCard = ({ wishlist, user, getWishlists }) => {
     const handleClickUser = () => {
         navigate(`/profile/${wishlist.username}`);
     };
-
-    const handleDelete = async () => {
-        await WishlistApi.deleteWishlist(wishlist.username, wishlist.category, wishlist.title);
-        getWishlists();
-    }
 
     return (
         <Card sx={{ width: 250, margin: '10px' }} key={wishlist.id}>
@@ -103,4 +98,4 @@ const WishlistCard = ({ wishlist, user, getWishlists }) => {
     )
 }
 
-export default WishlistCard;
+export default Post;

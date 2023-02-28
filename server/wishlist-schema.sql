@@ -24,6 +24,14 @@ CREATE TABLE items (
   image_link TEXT
 );
 
+CREATE TABLE favorite_item (
+    username VARCHAR NOT NULL
+        REFERENCES users ON DELETE CASCADE,
+    item_id INTEGER NOT NULL
+        REFERENCES items ON DELETE CASCADE,
+    PRIMARY KEY (username, item_id)
+);
+
 CREATE TABLE wishlist_categories (
     id SERIAL PRIMARY KEY,
     category VARCHAR(40) UNIQUE NOT NULL,
@@ -38,7 +46,8 @@ CREATE TABLE user_wishlists (
         REFERENCES wishlist_categories ON DELETE CASCADE,
     description VARCHAR(500),
     title VARCHAR(300) NOT NULL,
-    banner_img VARCHAR
+    banner_img VARCHAR,
+    date_time TIMESTAMP
 );
 
 CREATE TABLE user_wishlist_items (
@@ -49,13 +58,14 @@ CREATE TABLE user_wishlist_items (
     active BOOLEAN NOT NULL DEFAULT TRUE,
     must_have BOOLEAN NOT NULL DEFAULT FALSE,
     purchase BOOLEAN NOT NULL DEFAULT FALSE,
+    date_time TIMESTAMP,
     PRIMARY KEY (item_id, wishlist_id)
 );
 
 CREATE TABLE follow (
-    follower VARCHAR
+    username VARCHAR
         REFERENCES users ON DELETE CASCADE,
     following VARCHAR
         REFERENCES users ON DELETE CASCADE,
-    PRIMARY KEY (follower, following)
+    PRIMARY KEY (username, following)
 );

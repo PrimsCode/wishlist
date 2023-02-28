@@ -10,7 +10,7 @@ import {mainContainer, centerBox} from '../../style';
 
 const Item = () => {
     const container = {display: "flex",width:"1200px", height:"250px", margin:"10px"};
-    const wishlistContainer = {display: "flex", width:"1200px", height:"300px", margin:"10px"};
+    const wishlistContainer = {display: "flex", width:"1200px", minHeight:"300px", maxHeight:"350px", margin:"10px"};
     const {itemId} = useParams();
     const [item, setItem] = useState([]);
     const [items, setItems] = useState([]);

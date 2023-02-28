@@ -13,6 +13,7 @@ const Wishlist = () => {
     const { user } = useContext(UserContext);
     const [currUser, setCurrUser] = useState(user);
     const [wishlist, setWishlist] = useState([]);
+    const [displayType, setDisplayType] = useState("")
     const [isLoading, setIsLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const imgStyle = { margin: "5px", width: "150px", height: "150px", overflow: "hidden", borderRadius: "50%", objectFit: "cover" };
@@ -28,8 +29,11 @@ const Wishlist = () => {
         if (foundWishlist.username !== user.username) {
             const wishlistUser = await WishlistApi.getUser(foundWishlist.username);
             setCurrUser(wishlistUser);
-
+            setDisplayType("notUserWishlist");
+        } else {
+            setDisplayType("userWishlist");
         }
+        
         setIsLoading(true);
     }
 
@@ -84,7 +88,7 @@ const Wishlist = () => {
                     <>
                         {wishlist.items.map(item => (
                             <Grid item xs={12} sm={6} md={4.5} lg={2.5}>
-                                <ItemCard item={item} displayType="userWishlist" />
+                                <ItemCard item={item} displayType={displayType} />
                             </Grid>
                         ))}
                     </>

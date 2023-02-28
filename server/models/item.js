@@ -212,8 +212,6 @@ class Item {
       const foundCat = await itemCategoryCheck(category);
       if (!foundCat) throw new NotFoundError(`${category} does not exist!`);
 
-      // const lowerCaseCategory = category.toLowerCase();
-
       const res = await db.query(
             `SELECT i.id, c.category, c.color_code, i.name, i.price, i.description, i.link, i.image_link
              FROM items i

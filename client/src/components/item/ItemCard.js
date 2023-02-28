@@ -7,8 +7,14 @@ const ItemCard = ({ item, displayType, add, handleDelete }) => {
     const tag = { backgroundColor: item.color_code, color: "black", borderRadius: "8px", maxHeight: '20px', minHeight: '20px', fontSize: '10px' };
     const navigate = useNavigate();
 
-    const handleClick = () => {
+    console.log(displayType)
+
+    const handleClickItem = () => {
         navigate(`/items/${item.id}`);
+    };
+
+    const handleClickCategory = () => {
+        navigate(`/items/categories/${item.category}`);
     };
 
     let itemName;
@@ -33,12 +39,12 @@ const ItemCard = ({ item, displayType, add, handleDelete }) => {
                 </Box>
 
                 <Box>
-                    <Button variant="contained" style={tag} >
+                    <Button variant="contained" style={tag} onClick={handleClickCategory}>
                         {item.category}
                     </Button>
                 </Box>
 
-                <Box style={centerBox} onClick={handleClick} sx={{marginTop: "5px", marginBottom:"5px"}}>
+                <Box style={centerBox} onClick={handleClickItem} sx={{marginTop: "5px", marginBottom:"5px"}}>
                     <Button>
                         <img src={item.image_link} alt={item.name} style={{ maxWidth: '180px', maxHeight: '130px', overflow: 'hidden' }} />
                     </Button>

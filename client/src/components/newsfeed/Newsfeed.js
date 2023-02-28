@@ -6,8 +6,9 @@ import SearchBar from '../search/SearchBar';
 import SearchFilter from '../search/SearchFilter';
 import WishlistList from './WishlistList';
 import { mainContainer, centerBox } from '../../style';
+import Post from './Post';
 
-const WishlistPage = () => {
+const Newsfeed = () => {
     // const centering = {display: "flex", justifyContent: "center", alignItems:"center"};
     const [wishlists, setWishlists] = useState([]);
     const [searchData, setSearchData] = useState([]);
@@ -52,13 +53,13 @@ const WishlistPage = () => {
             <Grid container xs={12} style={centerBox} margin='20px'>
                 <Typography variant='h2'>Wishlists</Typography>
             </Grid>
-
+{/* 
             <Grid container style={centerBox}>
                 <SearchBar type="wishlists" setSearchData={setSearchData} data={wishlists} />
             </Grid>
-            {/* <Grid container>
+            <Grid container>
                 <SearchFilter type="wishlists" setFilter={setFilter} />
-            </Grid> */}
+            </Grid>
 
             <Grid container style={centerBox}>
                 {searchData.length ?
@@ -66,10 +67,10 @@ const WishlistPage = () => {
                     :
                     <Typography variant="h5" sx={{ margin: "30px" }} >No Wishlist found.</Typography>
                 }
-            </Grid>
+            </Grid> */}
 
         </Grid>
     )
 }
 
-export default WishlistPage;
+export default Newsfeed;

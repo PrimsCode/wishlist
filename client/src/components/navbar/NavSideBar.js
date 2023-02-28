@@ -11,7 +11,6 @@ import {
 } from '@mui/material';
 
 //icons
-
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import RedeemIcon from '@mui/icons-material/Redeem';
 import PersonIcon from '@mui/icons-material/Person';
@@ -23,7 +22,7 @@ import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import AddIcon from '@mui/icons-material/Add';
 
-const drawerWidth = "22vh";
+const drawerWidth = "20vh";
 
 function NavSideBar({ setToken, setUser, box }) {
 
@@ -64,7 +63,7 @@ function NavSideBar({ setToken, setUser, box }) {
                   <ListItemText primary="Profile" />
                 </ListItemButton>
               </ListItem>
-              <ListItem key="favorites" disablePadding onClick={() => handleClick(`/favorites/${user.username}`)}>
+              {/* <ListItem key="favorites" disablePadding onClick={() => handleClick(`/favorites/${user.username}`)}>
                 <ListItemButton>
                   <ListItemIcon>
                     <FavoriteIcon />
@@ -79,7 +78,7 @@ function NavSideBar({ setToken, setUser, box }) {
                   </ListItemIcon>
                   <ListItemText primary="Social" />
                 </ListItemButton>
-              </ListItem>
+              </ListItem> */}
             </List>
 
             <Divider />
