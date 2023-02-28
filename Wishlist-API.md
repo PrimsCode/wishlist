@@ -42,16 +42,23 @@ Response:
 ```
 
 ## User Endpoints
+
+# User Info
+
 GET /users
 > get all users
 ```
 Response:
-{
-   id
-   username
-   first_name
-   last_name
-   profile_pic
+{ users: 
+[
+{	id,
+username,
+first_name,
+last_name,
+profile_pic,
+isAdmin
+}
+]
 }
 ```
 
@@ -60,75 +67,132 @@ GET /users/{username}
 ```
 Response:
 {
-   id
-   username
-   first_name
-   last_name
-   profile_pic
-   isAdmin
+id,
+username,
+first_name,
+last_name,
+profile_pic,
+isAdmin
 }
 ```
 
 PATCH /users/{username}
-> edit a specific user by username
-```
-Request
-{
-   first_name
-   last_name
-   profile_pic
-}
-```
-```
-Response:
-{
-   id
-   username
-   first_name
-   last_name
-   profile_pic
-   isAdmin
-}
-```
-
-Delete /users/{username}
-> delete a specific user by username (admin or same user function)
-
-POST /users/{username}/wishlists
-> create a new wishlist for a specific user
+> edit a specific user
+*must be admin or user of that username*
 ```
 Request:
 {
-   wishlist_category
+first_name,
+last_name,
+profile_pic
 }
 ```
 ```
 Response:
 {
-   wishlist_category
+id,
+username,
+first_name,
+last_name,
+profile_pic,
+isAdmin
 }
 ```
+
+DELETE /users/{username}
+> delete a specific user
+*must be admin or user of that username*
+```
+Request:
+{
+	token
+}
+```
+
 GET /users/{username}/wishlists
-> get all wishlists of a specific user by username
+> get all wishlists of a specific user
+```
+Response:
+{ wishlists: 
+[
+{	id,
+username,
+category,
+color_code,
+title, 
+description, 
+banner_img
+}
+]
+
+}
+```
+POST /users/{username}/wishlists
+> create a new wishlist for a specific user
+*must be admin or user of that username*
+```
+Request:
+{
+	category, 
+title, 
+description, 
+banner_img
+}
+```
 ```
 Response:
 {
-   wishlists: [
-      {
-         id
-         wishlist_category
-      }
-   ]
+	category, 
+title, 
+description, 
+banner_img
 }
 ```
+
 GET /users/{username}/wishlists/{category}
-> get a wishlist of a category for a specific user by username
+> get all wishlists of a specific user by category
 ```
 Response:
-{
-   wishlist_category
+{ wishlists: 
+[
+{	id,
+username,
+category,
+color_code,
+title, 
+description, 
+banner_img
+}
+]
+
 }
 ```
+GET /users/{username}/wishlists/{category}/{title}
+> get a specific wishlist of a specific user
+```
+Response:
+{	id,
+   username,
+category,
+color_code,
+title, 
+description, 
+banner_img,
+items:
+[
+{
+name, 
+category, 
+description,
+link, 
+image_link, 
+price
+}
+]
+}
+```
+
+
 PATCH /users/{username}/wishlists/{category}
 > update a wishlist of a category for a specific user by username
 ```
