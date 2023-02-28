@@ -1,5 +1,7 @@
 # Wishlist
-A web app to allow you to create wishlists in different categories | Capstone II Project for Springboard Software Engineering Program
+A web app to allow you to create wishlists in different categories\
+Capstone II Project for Springboard Software Engineering Program\
+[Check out the deployed version here: Wishlist](https://wishlist-vrmv.onrender.com)
 
 ## Table of Contents
 * [General Info](#general-info)
@@ -11,7 +13,7 @@ A web app to allow you to create wishlists in different categories | Capstone II
 ## General Info
 This is a PERN stack project to showcase my knowledge of how to create interaction between frontend and backend.
 The project uses an Internal API created from NodeJs and Express with a backend database handled by PostgreSQL.
-Experience the web app here: [Wishlist](https://wishlist-vrmv.onrender.com)
+
 
 ## Stack
 #### Frontend:
