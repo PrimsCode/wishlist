@@ -24,7 +24,7 @@ The project uses an Internal API created from NodeJs and Express with a backend 
 
 ## Database Design
 Backend database design:
-![Wishlist Database](https://github.com/PrimsCode/wishlist/main/wishlist-ERD.png)
+![Wishlist Database](https://github.com/PrimsCode/wishlist/blob/master/wishlist-ERD.png)
 
 ## API Documentation
 Check out Wishlist-API.md file for the backend API Documentation.
