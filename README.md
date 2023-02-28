@@ -1,6 +1,5 @@
 # Wishlist
-A web app to allow you to create wishlists in different categories\
-Capstone II Project for Springboard Software Engineering Program\
+A web app to allow you to create wishlists in different categories | Capstone II Project for Springboard Software Engineering Program\
 [Check out the deployed version here: Wishlist](https://wishlist-vrmv.onrender.com)
 
 ## Table of Contents
