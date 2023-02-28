@@ -1,13 +1,12 @@
 const express = require("express");
 const app = express();
+const path = require('path');
 const cors = require("cors");
 const authRoutes = require("./routes/auth");
 const wishlistRoutes = require("./routes/wishlists");
 const userRoutes = require("./routes/users");
 const itemRoutes = require("./routes/items");
 const {NotFoundError} = require("./expressError");
-const User = require("./models/user");
-const { createToken } = require("./helpers/tokens");
 const {authenticateJWT}= require("./middleware/auth");
 
 //middleware
@@ -21,6 +20,8 @@ app.use("/users", userRoutes);
 app.use("/items", itemRoutes);
 app.use("/wishlists", wishlistRoutes);
 
+
+app.use(express.static(path.join(__dirname + "/public")))
 
 //Handle 404 errors
 app.use(function (req, res, next) {
